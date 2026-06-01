@@ -1,71 +1,71 @@
 # React Router v6
 
-## ¿Qué es?
-React Router es la librería de routing más popular para React, mantenida por Remix Software (ahora parte de Shopify). La versión 6 fue lanzada en noviembre 2021 e introdujo cambios significativos respecto a v5: rutas anidadas como componentes, `<Outlet>` para layouts compartidos, hooks mejorados y un sistema de matching más inteligente.
+## What is it?
+React Router is the most popular routing library for React, maintained by Remix Software (now part of Shopify). Version 6 was released in November 2021 and introduced significant changes from v5: nested routes as components, `<Outlet>` for shared layouts, improved hooks, and a smarter matching system.
 
-React Router maneja la navegación en Single Page Applications (SPAs): permite que la URL cambie sin recargar la página, mostrando distintos componentes según la ruta activa, manteniendo la ilusión de múltiples páginas en una sola aplicación.
+React Router handles navigation in Single Page Applications (SPAs): it allows the URL to change without reloading the page, rendering different components based on the active route and maintaining the illusion of multiple pages in a single application.
 
-La versión 6.4 agregó loaders y actions inspirados en Remix, trayendo fetching de datos integrado al router. Esto acercó React Router a lo que Next.js ofrecía para datos.
+Version 6.4 added loaders and actions inspired by Remix, bringing integrated data fetching into the router. This brought React Router closer to what Next.js offered for data.
 
-## ¿Para qué sirve?
-Implementar navegación multi-página en una SPA de React. Mapear URLs a componentes, manejar rutas dinámicas, proteger rutas con autenticación, y compartir layouts entre páginas.
+## What is it used for?
+Implementing multi-page navigation in a React SPA. Mapping URLs to components, handling dynamic routes, protecting routes with authentication, and sharing layouts between pages.
 
-En el mundo real: una app con `/`, `/productos`, `/productos/:id`, `/carrito`, `/admin` donde cada ruta muestra un componente diferente pero comparte el mismo navbar y footer.
+In the real world: an app with `/`, `/products`, `/products/:id`, `/cart`, `/admin` where each route renders a different component but shares the same navbar and footer.
 
-## Cambios de v5 a v6
+## Changes from v5 to v6
 
-| Característica | v5 | v6 |
-|----------------|----|----|
-| Definición de rutas | `<Switch><Route path exact>` | `<Routes><Route>` |
-| Matching | Primero en ganar | Mejor match automático |
-| Layouts anidados | Con react-router-config | Nativo con `<Outlet>` |
+| Feature | v5 | v6 |
+|---------|----|----|
+| Route definition | `<Switch><Route path exact>` | `<Routes><Route>` |
+| Matching | First to win | Best match automatically |
+| Nested layouts | With react-router-config | Native with `<Outlet>` |
 | Redirect | `<Redirect to>` | `<Navigate to>` |
 | useHistory | `useHistory()` | `useNavigate()` |
-| Parámetros | `useParams()` | `useParams()` (igual) |
-| Rutas relativas | Manual | Automático |
+| Parameters | `useParams()` | `useParams()` (same) |
+| Relative routes | Manual | Automatic |
 
-## Conceptos clave
+## Key Concepts
 
-**BrowserRouter** — Provider que habilita el routing basado en la URL del navegador. Usa la History API del browser. Envuelve toda la app.
+**BrowserRouter** — Provider that enables URL-based routing using the browser's History API. Wraps the entire app.
 
-**Routes** — Contenedor de rutas en v6. Reemplaza `<Switch>`. Selecciona automáticamente la ruta que mejor matchea la URL actual.
+**Routes** — Route container in v6. Replaces `<Switch>`. Automatically selects the route that best matches the current URL.
 
-**Route** — Define la relación entre un path y un componente (`element`). Soporta parámetros dinámicos (`/user/:id`) y rutas índice.
+**Route** — Defines the relationship between a path and a component (`element`). Supports dynamic parameters (`/user/:id`) and index routes.
 
-**Outlet** — Placeholder donde se renderizan las rutas hijas. Permite layouts anidados: el componente padre define la estructura visual y `<Outlet>` inserta el hijo activo.
+**Outlet** — Placeholder where child routes are rendered. Enables nested layouts: the parent component defines the visual structure and `<Outlet>` inserts the active child.
 
-**Navigate** — Componente para redirección declarativa. `useNavigate()` es el Hook equivalente para navegación programática.
+**Navigate** — Component for declarative redirection. `useNavigate()` is the equivalent Hook for programmatic navigation.
 
-## ¿Cuándo usarlo?
-- Cualquier SPA React con más de una "página".
-- Cuando necesitás URLs que reflejen el estado de la app (bookmarkable, compartible).
-- Apps con layouts complejos y rutas anidadas.
-- Proyectos que ya usan el ecosistema React Router/Remix.
+## When to use it?
+- Any React SPA with more than one "page".
+- When you need URLs that reflect the app's state (bookmarkable, shareable).
+- Apps with complex layouts and nested routes.
+- Projects already using the React Router/Remix ecosystem.
 
-## ¿Cuándo NO usarlo?
-- Apps de una sola vista sin navegación.
-- Si usás Next.js o Remix (tienen routing propio).
-- Si necesitás type-safety estricto en rutas con TypeScript: TanStack Router es mejor opción.
+## When NOT to use it?
+- Single-view apps with no navigation.
+- If you use Next.js or Remix (they have their own routing).
+- If you need strict type-safety for routes with TypeScript: TanStack Router is a better option.
 
-## ¿Vale la pena aprenderlo?
-Sí, React Router sigue siendo el estándar de facto para SPAs con React. La curva de aprendizaje de las rutas básicas es baja; entender `<Outlet>` y rutas anidadas para layouts lleva algo más de práctica. La migración de v5 a v6 requiere reescribir la configuración de rutas. Es ampliamente demandado en el mercado laboral para cualquier posición React.
+## Is it worth learning?
+Yes, React Router remains the de facto standard for SPAs with React. The learning curve for basic routes is low; understanding `<Outlet>` and nested routes for layouts takes a bit more practice. Migrating from v5 to v6 requires rewriting the route configuration. Widely demanded in the job market for any React position.
 
-## Alternativas
+## Alternatives
 
-| Tecnología | Cuándo elegirla |
-|------------|-----------------|
-| **React Router v6** (esta) | Estándar para SPAs, ecosistema maduro, proyectos existentes |
-| **TanStack Router** | TypeScript-first, type-safe params y search params, proyectos nuevos |
-| **Wouter** | Routing minimalista, bundle muy pequeño, sin extras |
-| **Next.js Router** | Apps con SSR/SSG, file-based routing automático |
+| Technology | When to choose it |
+|------------|------------------|
+| **React Router v6** (this) | Standard for SPAs, mature ecosystem, existing projects |
+| **TanStack Router** | TypeScript-first, type-safe params and search params, new projects |
+| **Wouter** | Minimalist routing, very small bundle, no extras |
+| **Next.js Router** | Apps with SSR/SSG, automatic file-based routing |
 
-## ¿React Router o TanStack Router?
-Para proyectos nuevos con TypeScript, TanStack Router ofrece type-safety completa: los params de ruta, search params y estado del loader son tipados end-to-end sin configuración manual. React Router sigue siendo válido y tiene un ecosistema más grande. Para proyectos que ya usan React Router v6, no hay razón para migrar a menos que la type-safety sea un pain point real.
+## React Router or TanStack Router?
+For new projects with TypeScript, TanStack Router offers complete type-safety: route params, search params, and loader state are typed end-to-end without manual configuration. React Router remains valid and has a larger ecosystem. For projects already using React Router v6, there's no reason to migrate unless type-safety is a real pain point.
 
-## Qué hace el ejemplo de esta rama
-`src/App.tsx` configura `BrowserRouter` con múltiples rutas anidadas usando `<Outlet>`. Demuestra un layout compartido (navbar), rutas con parámetros dinámicos (`:id`), rutas índice, y navegación programática con `useNavigate`.
+## What does the example in this branch do?
+`src/App.tsx` configures `BrowserRouter` with multiple nested routes using `<Outlet>`. It demonstrates a shared layout (navbar), routes with dynamic parameters (`:id`), index routes, and programmatic navigation with `useNavigate`.
 
-## Cómo ejecutar
+## How to run
 ```bash
 git checkout feat/react-router
 cd pweb-react-investigation
@@ -73,6 +73,6 @@ npm install
 npm run dev
 ```
 
-## Recursos oficiales
-- [React Router v6 — documentación oficial](https://reactrouter.com/)
-- [Tutorial oficial](https://reactrouter.com/en/main/start/tutorial)
+## Official Resources
+- [React Router v6 — official documentation](https://reactrouter.com/)
+- [Official tutorial](https://reactrouter.com/en/main/start/tutorial)
