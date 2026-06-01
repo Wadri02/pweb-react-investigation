@@ -1,78 +1,73 @@
-# React Router v6
+# React + TypeScript + Vite
 
-## What is it?
-React Router is the most popular routing library for React, maintained by Remix Software (now part of Shopify). Version 6 was released in November 2021 and introduced significant changes from v5: nested routes as components, `<Outlet>` for shared layouts, improved hooks, and a smarter matching system.
+This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
 
-React Router handles navigation in Single Page Applications (SPAs): it allows the URL to change without reloading the page, rendering different components based on the active route and maintaining the illusion of multiple pages in a single application.
+Currently, two official plugins are available:
 
-Version 6.4 added loaders and actions inspired by Remix, bringing integrated data fetching into the router. This brought React Router closer to what Next.js offered for data.
+- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
+- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
 
-## What is it used for?
-Implementing multi-page navigation in a React SPA. Mapping URLs to components, handling dynamic routes, protecting routes with authentication, and sharing layouts between pages.
+## React Compiler
 
-In the real world: an app with `/`, `/products`, `/products/:id`, `/cart`, `/admin` where each route renders a different component but shares the same navbar and footer.
+The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
 
-## Changes from v5 to v6
+## Expanding the ESLint configuration
 
-| Feature | v5 | v6 |
-|---------|----|----|
-| Route definition | `<Switch><Route path exact>` | `<Routes><Route>` |
-| Matching | First to win | Best match automatically |
-| Nested layouts | With react-router-config | Native with `<Outlet>` |
-| Redirect | `<Redirect to>` | `<Navigate to>` |
-| useHistory | `useHistory()` | `useNavigate()` |
-| Parameters | `useParams()` | `useParams()` (same) |
-| Relative routes | Manual | Automatic |
+If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
 
-## Key Concepts
+```js
+export default defineConfig([
+  globalIgnores(['dist']),
+  {
+    files: ['**/*.{ts,tsx}'],
+    extends: [
+      // Other configs...
 
-**BrowserRouter** — Provider that enables URL-based routing using the browser's History API. Wraps the entire app.
+      // Remove tseslint.configs.recommended and replace with this
+      tseslint.configs.recommendedTypeChecked,
+      // Alternatively, use this for stricter rules
+      tseslint.configs.strictTypeChecked,
+      // Optionally, add this for stylistic rules
+      tseslint.configs.stylisticTypeChecked,
 
-**Routes** — Route container in v6. Replaces `<Switch>`. Automatically selects the route that best matches the current URL.
-
-**Route** — Defines the relationship between a path and a component (`element`). Supports dynamic parameters (`/user/:id`) and index routes.
-
-**Outlet** — Placeholder where child routes are rendered. Enables nested layouts: the parent component defines the visual structure and `<Outlet>` inserts the active child.
-
-**Navigate** — Component for declarative redirection. `useNavigate()` is the equivalent Hook for programmatic navigation.
-
-## When to use it?
-- Any React SPA with more than one "page".
-- When you need URLs that reflect the app's state (bookmarkable, shareable).
-- Apps with complex layouts and nested routes.
-- Projects already using the React Router/Remix ecosystem.
-
-## When NOT to use it?
-- Single-view apps with no navigation.
-- If you use Next.js or Remix (they have their own routing).
-- If you need strict type-safety for routes with TypeScript: TanStack Router is a better option.
-
-## Is it worth learning?
-Yes, React Router remains the de facto standard for SPAs with React. The learning curve for basic routes is low; understanding `<Outlet>` and nested routes for layouts takes a bit more practice. Migrating from v5 to v6 requires rewriting the route configuration. Widely demanded in the job market for any React position.
-
-## Alternatives
-
-| Technology | When to choose it |
-|------------|------------------|
-| **React Router v6** (this) | Standard for SPAs, mature ecosystem, existing projects |
-| **TanStack Router** | TypeScript-first, type-safe params and search params, new projects |
-| **Wouter** | Minimalist routing, very small bundle, no extras |
-| **Next.js Router** | Apps with SSR/SSG, automatic file-based routing |
-
-## React Router or TanStack Router?
-For new projects with TypeScript, TanStack Router offers complete type-safety: route params, search params, and loader state are typed end-to-end without manual configuration. React Router remains valid and has a larger ecosystem. For projects already using React Router v6, there's no reason to migrate unless type-safety is a real pain point.
-
-## What does the example in this branch do?
-`src/App.tsx` configures `BrowserRouter` with multiple nested routes using `<Outlet>`. It demonstrates a shared layout (navbar), routes with dynamic parameters (`:id`), index routes, and programmatic navigation with `useNavigate`.
-
-## How to run
-```bash
-git checkout feat/react-router
-cd pweb-react-investigation
-npm install
-npm run dev
+      // Other configs...
+    ],
+    languageOptions: {
+      parserOptions: {
+        project: ['./tsconfig.node.json', './tsconfig.app.json'],
+        tsconfigRootDir: import.meta.dirname,
+      },
+      // other options...
+    },
+  },
+])
 ```
 
-## Official Resources
-- [React Router v6 — official documentation](https://reactrouter.com/)
-- [Official tutorial](https://reactrouter.com/en/main/start/tutorial)
+You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+
+```js
+// eslint.config.js
+import reactX from 'eslint-plugin-react-x'
+import reactDom from 'eslint-plugin-react-dom'
+
+export default defineConfig([
+  globalIgnores(['dist']),
+  {
+    files: ['**/*.{ts,tsx}'],
+    extends: [
+      // Other configs...
+      // Enable lint rules for React
+      reactX.configs['recommended-typescript'],
+      // Enable lint rules for React DOM
+      reactDom.configs.recommended,
+    ],
+    languageOptions: {
+      parserOptions: {
+        project: ['./tsconfig.node.json', './tsconfig.app.json'],
+        tsconfigRootDir: import.meta.dirname,
+      },
+      // other options...
+    },
+  },
+])
+```
