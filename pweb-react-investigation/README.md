@@ -1,84 +1,84 @@
 # React Hook Form + Zod
 
-## ¿Qué es?
-La combinación de React Hook Form (RHF) con Zod es el estándar actual para formularios en React con TypeScript. RHF maneja el estado y envío del formulario; Zod define el schema de validación con tipos de TypeScript inferidos automáticamente; y `@hookform/resolvers` conecta los dos mediante `zodResolver`.
+## What is it?
+The combination of React Hook Form (RHF) with Zod is the current standard for forms in React with TypeScript. RHF handles form state and submission; Zod defines the validation schema with automatically inferred TypeScript types; and `@hookform/resolvers` connects the two via `zodResolver`.
 
-Esta combinación resuelve el problema de "doble definición": sin Zod, definís los tipos TypeScript del formulario por un lado y las reglas de validación por otro. Con Zod, el schema es la única fuente de verdad: de él se infieren los tipos Y las validaciones, en un solo lugar.
+This combination solves the "double definition" problem: without Zod, you define TypeScript form types on one side and validation rules on the other. With Zod, the schema is the single source of truth: types AND validations are both inferred from it, in one place.
 
-Zod fue creado por Colin McDonnell y lanzado en 2020. Es una librería de validación de schemas TypeScript-first, donde el schema no solo valida en runtime sino que también infiere los tipos estáticos de TypeScript.
+Zod was created by Colin McDonnell and released in 2020. It is a TypeScript-first schema validation library where the schema not only validates at runtime but also infers static TypeScript types.
 
-## ¿Para qué sirve?
-Formularios con validación robusta, tipada end-to-end, donde el mismo schema valida en el cliente y puede reutilizarse en el servidor. Elimina la duplicación entre tipos TypeScript y lógica de validación.
+## What is it used for?
+Forms with robust, end-to-end typed validation, where the same schema validates on the client and can be reused on the server. Eliminates duplication between TypeScript types and validation logic.
 
-En el mundo real: un formulario de registro donde `email` debe ser un email válido, `password` debe tener mínimo 8 caracteres y al menos un número, y `confirmPassword` debe coincidir con `password`. Con Zod esto se expresa en un schema y se obtienen tipos y validaciones en una sola declaración.
+In the real world: a registration form where `email` must be a valid email, `password` must have at least 8 characters and at least one number, and `confirmPassword` must match `password`. With Zod this is expressed in a schema and you get types and validations in a single declaration.
 
-## El flujo completo
+## The complete flow
 
 ```tsx
-// 1. Definir el schema con Zod
+// 1. Define the schema with Zod
 const schema = z.object({
-  email: z.string().email('Email inválido'),
-  password: z.string().min(8, 'Mínimo 8 caracteres'),
-  age: z.number().min(18, 'Debes ser mayor de edad'),
+  email: z.string().email('Invalid email'),
+  password: z.string().min(8, 'Minimum 8 characters'),
+  age: z.number().min(18, 'Must be at least 18'),
 })
 
-// 2. Inferir el tipo TypeScript del schema (sin duplicación)
+// 2. Infer the TypeScript type from the schema (no duplication)
 type FormData = z.infer<typeof schema>
 // = { email: string; password: string; age: number }
 
-// 3. Conectar con useForm mediante zodResolver
+// 3. Connect to useForm via zodResolver
 const { register, handleSubmit, formState: { errors } } = useForm<FormData>({
   resolver: zodResolver(schema),
 })
 
-// 4. Registrar campos con tipos inferidos
+// 4. Register fields with inferred types
 <input {...register('email')} />
 {errors.email && <span>{errors.email.message}</span>}
 
-// 5. El submit recibe datos tipados y validados
+// 5. Submit receives typed and validated data
 const onSubmit = (data: FormData) => {
-  // data.email: string (garantizado, validado)
-  // data.age: number (Zod transforma string → number automáticamente)
+  // data.email: string (guaranteed, validated)
+  // data.age: number (Zod transforms string → number automatically)
 }
 ```
 
-## Conceptos clave
+## Key Concepts
 
-**zodResolver** — Función de `@hookform/resolvers/zod` que adapta un schema Zod para que RHF lo use como motor de validación. Se pasa como `resolver` en `useForm`.
+**zodResolver** — Function from `@hookform/resolvers/zod` that adapts a Zod schema for RHF to use as a validation engine. Passed as `resolver` in `useForm`.
 
-**z.infer** — Utilidad de TypeScript que extrae el tipo del schema Zod. La práctica estándar es `type FormData = z.infer<typeof schema>` y pasar ese tipo a `useForm<FormData>`.
+**z.infer** — TypeScript utility that extracts the type from the Zod schema. The standard practice is `type FormData = z.infer<typeof schema>` and passing that type to `useForm<FormData>`.
 
-**Transformaciones** — Zod puede transformar valores antes de que lleguen al handler: `z.string().transform(Number)` convierte el string del input a number. RHF envía el valor transformado.
+**Transformations** — Zod can transform values before they reach the handler: `z.string().transform(Number)` converts the input string to a number. RHF sends the transformed value.
 
-**Refinements** — Validaciones cruzadas entre campos: `.refine((data) => data.password === data.confirmPassword, { message: 'No coinciden', path: ['confirmPassword'] })`.
+**Refinements** — Cross-field validations: `.refine((data) => data.password === data.confirmPassword, { message: "Don't match", path: ['confirmPassword'] })`.
 
-**Mensajes de error tipados** — `errors.email.message` es siempre `string | undefined` gracias al tipo inferido. Sin Zod, el tipo sería más genérico.
+**Typed error messages** — `errors.email.message` is always `string | undefined` thanks to the inferred type. Without Zod, the type would be more generic.
 
-## ¿Cuándo usarlo?
-- Cualquier formulario en un proyecto React + TypeScript (es el estándar).
-- Cuando la validación del formulario debe reutilizarse en el servidor (mismo schema Zod para frontend y backend/API).
-- Formularios complejos con validaciones cruzadas entre campos.
+## When to use it?
+- Any form in a React + TypeScript project (it's the standard).
+- When form validation should be reused on the server (same Zod schema for frontend and backend/API).
+- Complex forms with cross-field validations.
 
-## ¿Cuándo NO usarlo?
-- Proyectos JavaScript sin TypeScript (Zod pierde su ventaja principal de inferencia).
-- Formularios de 1-2 campos simples donde `useState` con validación manual es suficiente.
+## When NOT to use it?
+- JavaScript projects without TypeScript (Zod loses its main advantage of inference).
+- Simple 1-2 field forms where `useState` with manual validation is enough.
 
-## ¿Vale la pena aprenderlo?
-Sí, es la combinación más recomendada en la comunidad React/TypeScript en 2024-2025. Aprender RHF y Zod por separado tiene valor independiente; juntos son más que la suma de sus partes. La curva de aprendizaje es media: RHF básico es simple, Zod avanzado (discriminated unions, transforms, refinements) requiere práctica. Altísima demanda en el mercado laboral.
+## Is it worth learning?
+Yes, it's the most recommended combination in the React/TypeScript community in 2024-2025. Learning RHF and Zod separately has independent value; together they are more than the sum of their parts. The learning curve is medium: basic RHF is simple, advanced Zod (discriminated unions, transforms, refinements) requires practice. Very high job market demand.
 
-## Alternativas
+## Alternatives
 
-| Tecnología | Cuándo elegirla |
-|------------|-----------------|
-| **RHF + Zod** (esta) | Estándar moderno TypeScript, validación tipada, reutilizable |
-| **RHF + Yup** | Equipo familiarizado con Yup, proyectos existentes |
-| **Formik + Yup** | Legado, equipo con experiencia previa |
-| **TanStack Form + Zod** | Futuro, type-safe completo, aún en maduración |
+| Technology | When to choose it |
+|------------|------------------|
+| **RHF + Zod** (this) | Modern TypeScript standard, typed validation, reusable |
+| **RHF + Yup** | Team familiar with Yup, existing projects |
+| **Formik + Yup** | Legacy, team with prior experience |
+| **TanStack Form + Zod** | Future, fully type-safe, still maturing |
 
-## Qué hace el ejemplo de esta rama
-`src/App.tsx` define un schema Zod con al menos 3 campos y validaciones (email, password con confirmación, campo numérico), infiere el tipo con `z.infer`, conecta con `useForm` mediante `zodResolver`, y muestra los mensajes de error validados por Zod. Demuestra el flujo completo: schema → tipo → useForm → register → submit tipado.
+## What does the example in this branch do?
+`src/App.tsx` defines a Zod schema with at least 3 fields and validations (email, password with confirmation, numeric field), infers the type with `z.infer`, connects to `useForm` via `zodResolver`, and displays error messages validated by Zod. It demonstrates the complete flow: schema → type → useForm → register → typed submit.
 
-## Cómo ejecutar
+## How to run
 ```bash
 git checkout feat/rhf-zod
 cd pweb-react-investigation
@@ -86,7 +86,7 @@ npm install
 npm run dev
 ```
 
-## Recursos oficiales
+## Official Resources
 - [React Hook Form — resolvers](https://react-hook-form.com/docs/useform#resolver)
-- [Zod — documentación oficial](https://zod.dev/)
+- [Zod — official documentation](https://zod.dev/)
 - [@hookform/resolvers](https://github.com/react-hook-form/resolvers)
