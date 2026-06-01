@@ -1,70 +1,70 @@
 # Material UI (MUI)
 
-## ¿Qué es?
-Material UI (MUI) es la librería de componentes React más popular del ecosistema, con más de 90.000 estrellas en GitHub. Implementa Material Design, el sistema de diseño creado por Google en 2014 con principios basados en papel y tinta digital. MUI fue creado por Olivier Tassinari y la comunidad en 2014.
+## What is it?
+Material UI (MUI) is the most popular React component library in the ecosystem, with over 90,000 GitHub stars. It implements Material Design, the design system created by Google in 2014 with principles based on digital paper and ink. MUI was created by Olivier Tassinari and the community in 2014.
 
-MUI ofrece un ecosistema completo: `@mui/material` con los componentes base, `@mui/x-data-grid` para tablas avanzadas, `@mui/x-date-pickers` para selectores de fecha, y `@mui/lab` para componentes experimentales. Esta cobertura amplia lo hace especialmente popular en aplicaciones enterprise y paneles de administración.
+MUI offers a complete ecosystem: `@mui/material` with the base components, `@mui/x-data-grid` for advanced tables, `@mui/x-date-pickers` for date selectors, and `@mui/lab` for experimental components. This broad coverage makes it especially popular in enterprise applications and admin dashboards.
 
-La versión 5 (2021) migró de JSS a Emotion como motor CSS-in-JS e introdujo el sistema `sx` prop para estilos inline con soporte de tokens. La versión 6 (2024) mejoró la compatibilidad con CSS variables y Server Components.
+Version 5 (2021) migrated from JSS to Emotion as its CSS-in-JS engine and introduced the `sx` prop system for inline styles with token support. Version 6 (2024) improved compatibility with CSS variables and Server Components.
 
-## ¿Para qué sirve?
-Construir interfaces con el design system de Material Design: elevación, animaciones de ripple, tipografía Roboto, paleta de colores semántica. Especialmente útil para dashboards internos, herramientas B2B y aplicaciones de gestión donde la consistencia visual y la cantidad de componentes disponibles son prioritarias.
+## What is it used for?
+Building interfaces with Material Design: elevation, ripple animations, Roboto typography, semantic color palette. Especially useful for internal dashboards, B2B tools, and management applications where visual consistency and component availability are priorities.
 
-En el mundo real: un sistema de gestión con tablas paginadas (`DataGrid`), formularios con validación, diálogos modales, drawer de navegación y snackbars de notificación — todo con el mismo lenguaje visual de Material Design.
+In the real world: a management system with paginated tables (`DataGrid`), forms with validation, modal dialogs, navigation drawer, and notification snackbars — all with the same Material Design visual language.
 
-## Principios de Material Design
+## Material Design Principles
 
-**Superficie y elevación** — Los elementos tienen una "altura" visual. Las sombras (`elevation`) indican jerarquía. Los tooltips flotan sobre el contenido.
+**Surface and elevation** — Elements have a visual "height." Shadows (`elevation`) indicate hierarchy. Tooltips float above content.
 
-**Movimiento con significado** — Las animaciones comunican relaciones entre elementos. El ripple effect en botones confirma la interacción.
+**Motion with meaning** — Animations communicate relationships between elements. The ripple effect on buttons confirms interaction.
 
-**Claridad y legibilidad** — Tipografía clara con jerarquía bien definida (h1-h6, body1, body2, caption).
+**Clarity and readability** — Clear typography with well-defined hierarchy (h1-h6, body1, body2, caption).
 
-**Color semántico** — primary, secondary, error, warning, info, success como roles de color independientes del valor hexadecimal.
+**Semantic color** — primary, secondary, error, warning, info, success as color roles independent of the hex value.
 
-## Conceptos clave
+## Key Concepts
 
-**ThemeProvider** — Provider que inyecta el tema en todos los componentes MUI. Permite personalizar paleta, tipografía, breakpoints y variantes de componentes.
+**ThemeProvider** — Provider that injects the theme into all MUI components. Allows customizing palette, typography, breakpoints, and component variants.
 
-**sx prop** — Prop de estilos inline que acepta propiedades CSS y tokens del tema. Alternativa a `makeStyles` para estilos específicos de un componente: `sx={{ mt: 2, color: 'primary.main' }}`.
+**sx prop** — Inline style prop that accepts CSS properties and theme tokens. Alternative to `makeStyles` for component-specific styles: `sx={{ mt: 2, color: 'primary.main' }}`.
 
-**Variantes** — Cada componente tiene variantes predefinidas. `Button` tiene `variant="contained"`, `"outlined"`, `"text"`. `Typography` tiene `variant="h1"` a `"caption"`.
+**Variants** — Each component has predefined variants. `Button` has `variant="contained"`, `"outlined"`, `"text"`. `Typography` has `variant="h1"` through `"caption"`.
 
-**Breakpoints del tema** — `xs` (0px), `sm` (600px), `md` (900px), `lg` (1200px), `xl` (1536px). Usables en `sx`: `sx={{ width: { xs: '100%', md: '50%' } }}`.
+**Theme breakpoints** — `xs` (0px), `sm` (600px), `md` (900px), `lg` (1200px), `xl` (1536px). Usable in `sx`: `sx={{ width: { xs: '100%', md: '50%' } }}`.
 
-**Grid system** — Grid de 12 columnas responsive: `<Grid container>` + `<Grid item xs={12} md={6}>`.
+**Grid system** — 12-column responsive grid: `<Grid container>` + `<Grid item xs={12} md={6}>`.
 
-## ¿Cuándo usarlo?
-- Aplicaciones enterprise, dashboards B2B o herramientas internas.
-- Cuando necesitás componentes complejos como DataGrid, DatePicker o TreeView.
-- Equipos que conocen Material Design y quieren consistencia inmediata.
-- Proyectos donde la velocidad de desarrollo supera la necesidad de diseño personalizado.
+## When to use it?
+- Enterprise applications, B2B dashboards, or internal tools.
+- When you need complex components like DataGrid, DatePicker, or TreeView.
+- Teams familiar with Material Design who want immediate consistency.
+- Projects where development speed outweighs the need for custom design.
 
-## ¿Cuándo NO usarlo?
-- Productos consumer con identidad visual propia que choca con Material Design.
-- Apps donde el bundle size es crítico (MUI agrega peso considerable).
-- Cuando el equipo quiere control total sobre los estilos sin pelear con los estilos de MUI.
+## When NOT to use it?
+- Consumer products with a custom visual identity that clashes with Material Design.
+- Apps where bundle size is critical (MUI adds considerable weight).
+- When the team wants full CSS control without fighting MUI's built-in styles.
 
-## ¿Vale la pena aprenderlo?
-Sí. MUI tiene la mayor demanda laboral de todas las librerías de componentes React. Aunque su look puede sentirse "genérico", la personalización con `ThemeProvider` es potente. La curva de aprendizaje del sistema de temas es media-alta, pero los componentes básicos son inmediatos. Es especialmente valioso para roles de frontend en empresas medianas y grandes.
+## Is it worth learning?
+Yes. MUI has the highest job market demand of all React component libraries. Although its look can feel "generic," customization with `ThemeProvider` is powerful. The learning curve for the theme system is medium-high, but basic components are immediately accessible. Especially valuable for frontend roles at medium and large companies.
 
-## Alternativas
+## Alternatives
 
-| Tecnología | Cuándo elegirla |
-|------------|-----------------|
-| **Material UI (MUI)** (esta) | Material Design, muchos componentes, enterprise, DataGrid |
-| **Chakra UI** | Diseño personalizado, mejor API para theming flexible |
-| **Tailwind CSS** | Control total, sin componentes prediseñados, velocidad |
-| **shadcn/ui** | Componentes copiados, Tailwind, máximo control del código |
-| **Ant Design** | Ecosistema similar a MUI pero con estética de Ant Financial |
+| Technology | When to choose it |
+|------------|------------------|
+| **Material UI (MUI)** (this) | Material Design, many components, enterprise, DataGrid |
+| **Chakra UI** | Custom design, better API for flexible theming |
+| **Tailwind CSS** | Full control, no pre-built components, speed |
+| **shadcn/ui** | Components copied into the project, Tailwind, maximum code control |
+| **Ant Design** | Similar ecosystem to MUI but with Ant Financial aesthetics |
 
-## ¿MUI o Chakra UI?
-MUI tiene más componentes (especialmente para datos: DataGrid, DatePicker) y es más maduro para enterprise. Chakra es más fácil de personalizar fuera del look de Material y tiene una API de props más limpia. Si el proyecto requiere un DataGrid o DatePicker avanzado, MUI gana por goleada. Si el diseño es personalizado y no Material-like, Chakra tiene menos fricción.
+## MUI or Chakra UI?
+MUI has more components (especially for data: DataGrid, DatePicker) and is more mature for enterprise. Chakra is easier to customize outside Material's look and has a cleaner props API. If the project requires an advanced DataGrid or DatePicker, MUI wins decisively. If the design is custom and non-Material-like, Chakra has less friction.
 
-## Qué hace el ejemplo de esta rama
-`src/App.tsx` configura `ThemeProvider` con un tema personalizado y usa componentes como `Button`, `TextField`, `Card`, `AppBar`, `Typography` con el sistema de `sx` prop. Demuestra las variantes y el sistema de breakpoints responsive.
+## What does the example in this branch do?
+`src/App.tsx` configures `ThemeProvider` with a custom theme and uses components like `Button`, `TextField`, `Card`, `AppBar`, `Typography` with the `sx` prop system. It demonstrates variants and the responsive breakpoint system.
 
-## Cómo ejecutar
+## How to run
 ```bash
 git checkout feat/material-ui
 cd pweb-react-investigation
@@ -72,7 +72,7 @@ npm install
 npm run dev
 ```
 
-## Recursos oficiales
-- [MUI — documentación oficial](https://mui.com/)
+## Official Resources
+- [MUI — official documentation](https://mui.com/)
 - [Material Design 3](https://m3.material.io/)
-- [MUI X — componentes avanzados](https://mui.com/x/)
+- [MUI X — advanced components](https://mui.com/x/)
