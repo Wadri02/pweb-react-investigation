@@ -1,70 +1,70 @@
-# Context API y useContext
+# Context API and useContext
 
-## ¿Qué es?
-Context API es el sistema de estado global nativo de React, disponible desde React 16.3. Fue creado por el equipo de Meta para resolver el problema del prop drilling: pasar datos a través de múltiples niveles de componentes que no los necesitan directamente, solo para hacerlos llegar a un componente profundo en el árbol.
+## What is it?
+Context API is React's built-in global state system, available since React 16.3. It was created by the Meta team to solve the prop drilling problem: passing data through multiple levels of components that don't need it directly, just to get it to a deeply nested component.
 
-El Hook `useContext` (React 16.8) simplificó el consumo de contextos, eliminando la necesidad del patrón `Consumer` con render props que era verbose y difícil de leer.
+The `useContext` Hook (React 16.8) simplified context consumption, eliminating the need for the verbose `Consumer` render props pattern.
 
-A diferencia de librerías externas como Zustand o Redux, Context API no es un gestor de estado: es un mecanismo de inyección de dependencias. No optimiza re-renders automáticamente.
+Unlike external libraries like Zustand or Redux, Context API is not a state manager: it's a dependency injection mechanism. It does not automatically optimize re-renders.
 
-## ¿Para qué sirve?
-Compartir datos que son "globales" para un árbol de componentes sin pasarlos manualmente prop a prop. Casos de uso ideales: tema visual (dark/light), idioma/i18n, usuario autenticado, preferencias de configuración.
+## What is it used for?
+Sharing data that is "global" to a component tree without passing it manually prop by prop. Ideal use cases: visual theme (dark/light), language/i18n, authenticated user, configuration preferences.
 
-En el mundo real: una app con decenas de componentes que necesitan saber si el usuario está logueado. Sin Context, pasarías `user` como prop por 5 niveles. Con Context, cualquier componente lo consume directamente con `useContext(AuthContext)`.
+In the real world: an app with dozens of components that need to know if the user is logged in. Without Context, you'd pass `user` as a prop through 5 levels. With Context, any component can consume it directly with `useContext(AuthContext)`.
 
-## El problema que resuelve: prop drilling
+## The problem it solves: prop drilling
 
 ```
-App (tiene user)
-  └── Layout (recibe user, solo para pasarlo)
-        └── Sidebar (recibe user, solo para pasarlo)
-              └── UserMenu (necesita user ← aquí es donde se usa)
+App (has user)
+  └── Layout (receives user, just to pass it down)
+        └── Sidebar (receives user, just to pass it down)
+              └── UserMenu (needs user ← where it's actually used)
 ```
 
-Con Context, `UserMenu` llama `useContext(AuthContext)` y accede a `user` sin que `Layout` ni `Sidebar` sepan que existe.
+With Context, `UserMenu` calls `useContext(AuthContext)` and accesses `user` without `Layout` or `Sidebar` knowing it exists.
 
-## Conceptos clave
+## Key Concepts
 
-**createContext** — Crea el objeto de contexto. Acepta un valor por defecto usado cuando no hay Provider padre.
+**createContext** — Creates the context object. Accepts a default value used when there is no parent Provider.
 
-**Provider** — Componente que envuelve el árbol y provee el valor. Cualquier cambio en el valor re-renderiza todos los consumidores.
+**Provider** — Component that wraps the tree and provides the value. Any change in the value re-renders all consumers.
 
-**useContext** — Hook que consume el contexto más cercano del tipo indicado. Si el valor cambia, el componente re-renderiza.
+**useContext** — Hook that consumes the nearest context of the indicated type. If the value changes, the component re-renders.
 
-**Composición de contextos** — Es normal tener varios contextos independientes (`ThemeContext`, `AuthContext`, `LanguageContext`). Separarlos evita re-renders innecesarios.
+**Context composition** — It's normal to have several independent contexts (`ThemeContext`, `AuthContext`, `LanguageContext`). Separating them avoids unnecessary re-renders.
 
-**Value memoización** — Si el valor del Provider es un objeto creado en render, memorizarlo con `useMemo` evita re-renders en cascada por referencias nuevas.
+**Value memoization** — If the Provider's value is an object created on render, memoizing it with `useMemo` prevents cascading re-renders from new references.
 
-## ¿Cuándo usarlo?
-- Datos que cambian raramente pero se leen en muchos lugares: tema, idioma, usuario.
-- Para evitar prop drilling en más de 2-3 niveles.
-- Cuando no querés agregar una dependencia externa para algo simple.
-- Inyección de dependencias en tests (mockear el Provider).
+## When to use it?
+- Data that changes rarely but is read in many places: theme, language, user.
+- To avoid prop drilling across more than 2-3 levels.
+- When you don't want to add an external dependency for something simple.
+- Dependency injection in tests (mocking the Provider).
 
-## ¿Cuándo NO usarlo?
-- Estado que cambia frecuentemente (contadores en tiempo real, listas que se filtran): cada cambio re-renderiza todos los consumidores.
-- Lógica de negocio compleja con muchas acciones: Zustand o Redux escalan mejor.
-- Si la app crece y empezás a tener performance issues por re-renders, es señal de migrar a Zustand.
+## When NOT to use it?
+- State that changes frequently (real-time counters, filtered lists): every change re-renders all consumers.
+- Complex business logic with many actions: Zustand or Redux scale better.
+- If the app grows and you start seeing performance issues from re-renders, that's a sign to migrate to Zustand.
 
-## ¿Vale la pena aprenderlo?
-Sí, y es obligatorio para entender React en profundidad. Context API viene incluido en React, no agrega peso al bundle, y es suficiente para proyectos pequeños y medianos. La curva de aprendizaje es baja. Sin embargo, para apps con estado complejo o frecuentes actualizaciones, Zustand lo supera en ergonomía y rendimiento con poca complejidad adicional.
+## Is it worth learning?
+Yes, and it's mandatory for understanding React in depth. Context API is included in React, adds no bundle weight, and is sufficient for small to medium projects. The learning curve is low. However, for apps with complex state or frequent updates, Zustand surpasses it in ergonomics and performance with minimal added complexity.
 
-## Alternativas
+## Alternatives
 
-| Tecnología | Cuándo elegirla |
-|------------|-----------------|
-| **Context API** (esta) | Datos estáticos/semi-estáticos, sin dependencias externas, proyectos simples |
-| **Zustand** | Estado que cambia seguido, múltiples acciones, mejor rendimiento, API más simple |
-| **Redux Toolkit** | Apps enterprise, equipos grandes, necesidad de devtools y middlewares |
-| **Jotai/Recoil** | Estado atómico con granularidad fina en actualizaciones |
+| Technology | When to choose it |
+|------------|------------------|
+| **Context API** (this) | Static/semi-static data, no external dependencies, simple projects |
+| **Zustand** | Frequently changing state, multiple actions, better performance, simpler API |
+| **Redux Toolkit** | Enterprise apps, large teams, need for devtools and middlewares |
+| **Jotai/Recoil** | Atomic state with fine-grained update granularity |
 
-## ¿Context API o Zustand?
-Para datos que cambian raramente (tema, usuario logueado), Context API es suficiente y no agrega dependencias. Para estado de UI que cambia frecuentemente o con lógica de negocio, Zustand es mejor: sus selectores evitan re-renders innecesarios, la API es más limpia y el bundle extra es mínimo (~1kb gzip).
+## Context API or Zustand?
+For rarely changing data (theme, logged-in user), Context API is sufficient and adds no dependencies. For UI state that changes frequently or involves business logic, Zustand is better: its selectors avoid unnecessary re-renders, the API is cleaner, and the extra bundle is minimal (~1kb gzip).
 
-## Qué hace el ejemplo de esta rama
-`src/App.tsx` demuestra Context API con un caso de uso real: un `ThemeContext` o `AuthContext` que comparte datos entre componentes hermanos sin prop drilling. Muestra la creación del contexto, el Provider envolviendo el árbol, y múltiples componentes consumidores usando `useContext`.
+## What does the example in this branch do?
+`src/App.tsx` demonstrates Context API with a real use case: a `ThemeContext` or `AuthContext` that shares data between sibling components without prop drilling. It shows context creation, the Provider wrapping the tree, and multiple consumer components using `useContext`.
 
-## Cómo ejecutar
+## How to run
 ```bash
 git checkout feat/context
 cd pweb-react-investigation
@@ -72,7 +72,7 @@ npm install
 npm run dev
 ```
 
-## Recursos oficiales
+## Official Resources
 - [createContext — react.dev](https://react.dev/reference/react/createContext)
 - [useContext — react.dev](https://react.dev/reference/react/useContext)
-- [Pasar datos en profundidad con Context — react.dev](https://react.dev/learn/passing-data-deeply-with-context)
+- [Passing Data Deeply with Context — react.dev](https://react.dev/learn/passing-data-deeply-with-context)
