@@ -1,88 +1,88 @@
 # React Testing Library
 
-## ¿Qué es?
-React Testing Library (RTL) es una librería de testing para componentes React, creada por Kent C. Dodds y lanzada en 2018. Su filosofía central es: "Cuanto más se parecen tus tests a como los usuarios usan el software, más confianza te dan."
+## What is it?
+React Testing Library (RTL) is a testing library for React components, created by Kent C. Dodds and released in 2018. Its core philosophy is: "The more your tests resemble the way your software is used, the more confidence they can give you."
 
-RTL no testea implementación: no accede al estado interno del componente, no busca por nombre de clase CSS, no llama métodos del componente directamente. En cambio, testea comportamiento: qué ve el usuario, qué puede hacer, qué pasa cuando lo hace.
+RTL does not test implementation: it doesn't access the component's internal state, doesn't search by CSS class names, doesn't call component methods directly. Instead, it tests behavior: what the user sees, what they can do, what happens when they do it.
 
-Reemplazó a Enzyme (la librería anterior de testing de React) que permitía hacer shallow rendering e inspeccionar el estado interno. RTL es opinionada: si no puedes testear algo con RTL, probablemente el componente está mal diseñado para el usuario.
+It replaced Enzyme (the previous React testing library) which allowed shallow rendering and inspecting internal state. RTL is opinionated: if you can't test something with RTL, the component is probably poorly designed from the user's perspective.
 
-## ¿Para qué sirve?
-Testear componentes React desde la perspectiva del usuario: renderizar el componente, interactuar con él (clicks, typing, form submissions), y verificar que el DOM muestra lo correcto.
+## What is it used for?
+Testing React components from the user's perspective: render the component, interact with it (clicks, typing, form submissions), and verify that the DOM shows the correct output.
 
-En el mundo real: testear que un botón de "Agregar al carrito" agrega el item y actualiza el contador, sin importar si internamente usa `useState` o Zustand.
+In the real world: testing that an "Add to Cart" button adds the item and updates the counter, regardless of whether it internally uses `useState` or Zustand.
 
-## Filosofía: testear comportamiento no implementación
+## Philosophy: test behavior not implementation
 
 ```tsx
-// ❌ Testear implementación (frágil, se rompe en refactors)
+// ❌ Testing implementation (fragile, breaks on refactors)
 const wrapper = shallow(<Button />)
 expect(wrapper.state('isClicked')).toBe(true)
 expect(wrapper.find('.btn-class')).toHaveLength(1)
 
-// ✅ Testear comportamiento (robusto, refleja lo que el usuario ve)
+// ✅ Testing behavior (robust, reflects what the user sees)
 render(<Button />)
-userEvent.click(screen.getByRole('button', { name: /agregar/i }))
-expect(screen.getByText('1 item en el carrito')).toBeInTheDocument()
+userEvent.click(screen.getByRole('button', { name: /add/i }))
+expect(screen.getByText('1 item in cart')).toBeInTheDocument()
 ```
 
-Si refactorizás `useState` por Zustand, el test de comportamiento sigue pasando.
+If you refactor `useState` to Zustand, the behavior test keeps passing.
 
-## Queries en orden de preferencia
+## Queries in order of preference
 
-RTL ofrece múltiples queries. Usarlas en este orden garantiza que tus tests son accesibles:
+RTL offers multiple queries. Using them in this order ensures your tests are accessible:
 
-| Prioridad | Query | Úsala cuando... |
-|-----------|-------|-----------------|
-| 1 (más preferida) | `getByRole` | El elemento tiene un rol ARIA (button, link, heading, etc.) |
-| 2 | `getByLabelText` | Input asociado a un label (formularios) |
-| 3 | `getByPlaceholderText` | Input sin label pero con placeholder |
-| 4 | `getByText` | Elemento con texto visible |
-| 5 | `getByDisplayValue` | Input con valor actual |
-| 6 | `getByAltText` | Imagen con alt text |
-| 7 | `getByTitle` | Elemento con atributo title |
-| 8 (menos preferida) | `getByTestId` | Solo cuando nada más funciona |
+| Priority | Query | Use when... |
+|----------|-------|------------|
+| 1 (most preferred) | `getByRole` | Element has an ARIA role (button, link, heading, etc.) |
+| 2 | `getByLabelText` | Input associated with a label (forms) |
+| 3 | `getByPlaceholderText` | Input without label but with placeholder |
+| 4 | `getByText` | Element with visible text |
+| 5 | `getByDisplayValue` | Input with current value |
+| 6 | `getByAltText` | Image with alt text |
+| 7 | `getByTitle` | Element with title attribute |
+| 8 (least preferred) | `getByTestId` | Only when nothing else works |
 
-## Conceptos clave
+## Key Concepts
 
-**get / query / find** — Variantes de cada query:
-- `getBy...` — Retorna el elemento o lanza error si no existe. Úsala cuando el elemento debe estar presente.
-- `queryBy...` — Retorna el elemento o `null`. Úsala para verificar que algo NO está: `expect(queryByText('Error')).not.toBeInTheDocument()`.
-- `findBy...` — Retorna una promesa. Úsala para elementos que aparecen asincrónicamente.
+**get / query / find** — Variants of each query:
+- `getBy...` — Returns the element or throws an error if not found. Use it when the element must be present.
+- `queryBy...` — Returns the element or `null`. Use it to verify something is NOT there: `expect(queryByText('Error')).not.toBeInTheDocument()`.
+- `findBy...` — Returns a promise. Use it for elements that appear asynchronously.
 
-**userEvent vs fireEvent** — `userEvent` (del paquete `@testing-library/user-event`) simula interacciones reales del usuario: typing dispara keydown + keypress + input + keyup. `fireEvent` es de bajo nivel y solo dispara un evento. Preferí siempre `userEvent`.
+**userEvent vs fireEvent** — `userEvent` (from `@testing-library/user-event`) simulates real user interactions: typing fires keydown + keypress + input + keyup. `fireEvent` is low-level and only fires a single event. Always prefer `userEvent`.
 
-**render** — Renderiza el componente en un DOM virtual (jsdom). Retorna queries y el `container`.
+**render** — Renders the component in a virtual DOM (jsdom). Returns queries and the `container`.
 
-**screen** — Objeto global de RTL que contiene todas las queries sobre el DOM renderizado. Preferible a destructurar de `render`.
+**screen** — RTL's global object that contains all queries on the rendered DOM. Preferred over destructuring from `render`.
 
-**waitFor** — Espera a que una assertion pase, útil para efectos asincrónicos.
+**waitFor** — Waits for an assertion to pass, useful for async side effects.
 
-## ¿Cuándo usarlo?
-- Para todo test de componentes React (junto con Jest o Vitest como runner).
-- Cuando querés que los tests sean robustos ante refactors internos.
-- Para testear accesibilidad implícitamente (usar `getByRole` te obliga a tener roles correctos).
+## When to use it?
+- For all React component tests (alongside Jest or Vitest as the runner).
+- When you want tests to be robust against internal refactors.
+- For implicitly testing accessibility (`getByRole` forces you to have correct roles).
 
-## ¿Cuándo NO usarlo?
-- Para tests unitarios de funciones puras o hooks sin UI: Jest/Vitest es suficiente.
-- Para E2E: Cypress o Playwright son más adecuados.
+## When NOT to use it?
+- For unit tests of pure functions or hooks without UI: Jest/Vitest alone is sufficient.
+- For E2E: Cypress or Playwright are more appropriate.
 
-## ¿Vale la pena aprenderlo?
-Absolutamente. RTL es el estándar para testing de componentes React. La curva de aprendizaje es media: entender el modelo mental (testear comportamiento, no implementación) y las queries asincrónicas requiere práctica. Una vez internalizado el paradigma, los tests se escriben rápido y son muy robustos. Alta demanda laboral en empresas con cultura de testing.
+## Is it worth learning?
+Absolutely. RTL is the standard for React component testing. The learning curve is medium: understanding the mental model (test behavior, not implementation) and async queries requires practice. Once the paradigm is internalized, tests are written quickly and are very robust. High job market demand in companies with a testing culture.
 
-## Alternativas
+## Alternatives
 
-| Tecnología | Cuándo elegirla |
-|------------|-----------------|
-| **React Testing Library** (esta) | Estándar para unit/integration de componentes React |
-| **Enzyme** | Proyectos legacy en React < 17, shallow rendering |
-| **Cypress Component Testing** | Tests de componentes con un browser real |
-| **Playwright** | Testing de componentes más cercano al E2E |
+| Technology | When to choose it |
+|------------|------------------|
+| **React Testing Library** (this) | Standard for unit/integration of React components |
+| **Enzyme** | Legacy projects on React < 17, shallow rendering |
+| **Cypress Component Testing** | Component tests with a real browser |
+| **Playwright** | Component testing closer to E2E |
 
-## Qué hace el ejemplo de esta rama
-`src/App.tsx` contiene componentes con interacciones (botones, formularios, listas). Los tests demuestran `render`, queries con `screen.getByRole` y `screen.getByText`, interacciones con `userEvent`, assertions con `toBeInTheDocument()`, y el patrón `findBy` para elementos que aparecen después de una acción asincrónica.
+## What does the example in this branch do?
+`src/App.tsx` contains components with interactions (buttons, forms, lists). The tests demonstrate `render`, queries with `screen.getByRole` and `screen.getByText`, interactions with `userEvent`, assertions with `toBeInTheDocument()`, and the `findBy` pattern for elements that appear after an async action.
 
-## Cómo ejecutar
+## How to run
 ```bash
 git checkout feat/rtl
 cd pweb-react-investigation
@@ -90,7 +90,7 @@ npm install
 npm test
 ```
 
-## Recursos oficiales
-- [React Testing Library — documentación oficial](https://testing-library.com/docs/react-testing-library/intro/)
-- [Queries — guía de prioridad](https://testing-library.com/docs/queries/about#priority)
+## Official Resources
+- [React Testing Library — official documentation](https://testing-library.com/docs/react-testing-library/intro/)
+- [Queries — priority guide](https://testing-library.com/docs/queries/about#priority)
 - [user-event v14](https://testing-library.com/docs/user-event/intro)
