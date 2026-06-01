@@ -2,6 +2,8 @@ import { useState } from 'react'
 
 type Resultado = 'idle' | 'exito' | 'error'
 
+const esEmailValido = (email: string) => email.includes('@') && email.includes('.')
+
 export default function LoginForm() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
@@ -9,7 +11,7 @@ export default function LoginForm() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
-    const valido = email.includes('@') && password.length > 5
+    const valido = esEmailValido(email) && password.length > 5
     setResultado(valido ? 'exito' : 'error')
   }
 
@@ -19,7 +21,7 @@ export default function LoginForm() {
         <label htmlFor="email">Email</label>
         <input
           id="email"
-          type="email"
+          type="text"
           value={email}
           onChange={e => setEmail(e.target.value)}
           style={{ display: 'block', width: '100%', marginTop: 4, padding: '6px 10px' }}
