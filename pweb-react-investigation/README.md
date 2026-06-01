@@ -1,78 +1,73 @@
-# Material UI (MUI)
+# React + TypeScript + Vite
 
-## What is it?
-Material UI (MUI) is the most popular React component library in the ecosystem, with over 90,000 GitHub stars. It implements Material Design, the design system created by Google in 2014 with principles based on digital paper and ink. MUI was created by Olivier Tassinari and the community in 2014.
+This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
 
-MUI offers a complete ecosystem: `@mui/material` with the base components, `@mui/x-data-grid` for advanced tables, `@mui/x-date-pickers` for date selectors, and `@mui/lab` for experimental components. This broad coverage makes it especially popular in enterprise applications and admin dashboards.
+Currently, two official plugins are available:
 
-Version 5 (2021) migrated from JSS to Emotion as its CSS-in-JS engine and introduced the `sx` prop system for inline styles with token support. Version 6 (2024) improved compatibility with CSS variables and Server Components.
+- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
+- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
 
-## What is it used for?
-Building interfaces with Material Design: elevation, ripple animations, Roboto typography, semantic color palette. Especially useful for internal dashboards, B2B tools, and management applications where visual consistency and component availability are priorities.
+## React Compiler
 
-In the real world: a management system with paginated tables (`DataGrid`), forms with validation, modal dialogs, navigation drawer, and notification snackbars — all with the same Material Design visual language.
+The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
 
-## Material Design Principles
+## Expanding the ESLint configuration
 
-**Surface and elevation** — Elements have a visual "height." Shadows (`elevation`) indicate hierarchy. Tooltips float above content.
+If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
 
-**Motion with meaning** — Animations communicate relationships between elements. The ripple effect on buttons confirms interaction.
+```js
+export default defineConfig([
+  globalIgnores(['dist']),
+  {
+    files: ['**/*.{ts,tsx}'],
+    extends: [
+      // Other configs...
 
-**Clarity and readability** — Clear typography with well-defined hierarchy (h1-h6, body1, body2, caption).
+      // Remove tseslint.configs.recommended and replace with this
+      tseslint.configs.recommendedTypeChecked,
+      // Alternatively, use this for stricter rules
+      tseslint.configs.strictTypeChecked,
+      // Optionally, add this for stylistic rules
+      tseslint.configs.stylisticTypeChecked,
 
-**Semantic color** — primary, secondary, error, warning, info, success as color roles independent of the hex value.
-
-## Key Concepts
-
-**ThemeProvider** — Provider that injects the theme into all MUI components. Allows customizing palette, typography, breakpoints, and component variants.
-
-**sx prop** — Inline style prop that accepts CSS properties and theme tokens. Alternative to `makeStyles` for component-specific styles: `sx={{ mt: 2, color: 'primary.main' }}`.
-
-**Variants** — Each component has predefined variants. `Button` has `variant="contained"`, `"outlined"`, `"text"`. `Typography` has `variant="h1"` through `"caption"`.
-
-**Theme breakpoints** — `xs` (0px), `sm` (600px), `md` (900px), `lg` (1200px), `xl` (1536px). Usable in `sx`: `sx={{ width: { xs: '100%', md: '50%' } }}`.
-
-**Grid system** — 12-column responsive grid: `<Grid container>` + `<Grid item xs={12} md={6}>`.
-
-## When to use it?
-- Enterprise applications, B2B dashboards, or internal tools.
-- When you need complex components like DataGrid, DatePicker, or TreeView.
-- Teams familiar with Material Design who want immediate consistency.
-- Projects where development speed outweighs the need for custom design.
-
-## When NOT to use it?
-- Consumer products with a custom visual identity that clashes with Material Design.
-- Apps where bundle size is critical (MUI adds considerable weight).
-- When the team wants full CSS control without fighting MUI's built-in styles.
-
-## Is it worth learning?
-Yes. MUI has the highest job market demand of all React component libraries. Although its look can feel "generic," customization with `ThemeProvider` is powerful. The learning curve for the theme system is medium-high, but basic components are immediately accessible. Especially valuable for frontend roles at medium and large companies.
-
-## Alternatives
-
-| Technology | When to choose it |
-|------------|------------------|
-| **Material UI (MUI)** (this) | Material Design, many components, enterprise, DataGrid |
-| **Chakra UI** | Custom design, better API for flexible theming |
-| **Tailwind CSS** | Full control, no pre-built components, speed |
-| **shadcn/ui** | Components copied into the project, Tailwind, maximum code control |
-| **Ant Design** | Similar ecosystem to MUI but with Ant Financial aesthetics |
-
-## MUI or Chakra UI?
-MUI has more components (especially for data: DataGrid, DatePicker) and is more mature for enterprise. Chakra is easier to customize outside Material's look and has a cleaner props API. If the project requires an advanced DataGrid or DatePicker, MUI wins decisively. If the design is custom and non-Material-like, Chakra has less friction.
-
-## What does the example in this branch do?
-`src/App.tsx` configures `ThemeProvider` with a custom theme and uses components like `Button`, `TextField`, `Card`, `AppBar`, `Typography` with the `sx` prop system. It demonstrates variants and the responsive breakpoint system.
-
-## How to run
-```bash
-git checkout feat/material-ui
-cd pweb-react-investigation
-npm install
-npm run dev
+      // Other configs...
+    ],
+    languageOptions: {
+      parserOptions: {
+        project: ['./tsconfig.node.json', './tsconfig.app.json'],
+        tsconfigRootDir: import.meta.dirname,
+      },
+      // other options...
+    },
+  },
+])
 ```
 
-## Official Resources
-- [MUI — official documentation](https://mui.com/)
-- [Material Design 3](https://m3.material.io/)
-- [MUI X — advanced components](https://mui.com/x/)
+You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+
+```js
+// eslint.config.js
+import reactX from 'eslint-plugin-react-x'
+import reactDom from 'eslint-plugin-react-dom'
+
+export default defineConfig([
+  globalIgnores(['dist']),
+  {
+    files: ['**/*.{ts,tsx}'],
+    extends: [
+      // Other configs...
+      // Enable lint rules for React
+      reactX.configs['recommended-typescript'],
+      // Enable lint rules for React DOM
+      reactDom.configs.recommended,
+    ],
+    languageOptions: {
+      parserOptions: {
+        project: ['./tsconfig.node.json', './tsconfig.app.json'],
+        tsconfigRootDir: import.meta.dirname,
+      },
+      // other options...
+    },
+  },
+])
+```
