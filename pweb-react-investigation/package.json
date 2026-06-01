@@ -1,5 +1,5 @@
 {
-  "name": "pweb-react-investigation",
+  "name": "react-exam-boilerplate",
   "private": true,
   "version": "0.0.0",
   "type": "module",
@@ -11,7 +11,8 @@
   },
   "dependencies": {
     "react": "^19.2.6",
-    "react-dom": "^19.2.6"
+    "react-dom": "^19.2.6",
+    "zustand": "^5.0.14"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
