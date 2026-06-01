@@ -1,84 +1,73 @@
-# Jest
+# React + TypeScript + Vite
 
-## What is it?
-Jest is a JavaScript testing framework created by Facebook/Meta, released in 2014. It is the most popular test runner in the JavaScript ecosystem: it includes runner, assertions, mocking, coverage, and watch mode in a single package with no configuration needed.
+This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
 
-Jest is famous for its "zero config" approach: it works without configuration in most JavaScript and TypeScript projects. It uses `jsdom` as a simulated DOM environment, which allows testing browser code without a real browser.
+Currently, two official plugins are available:
 
-**Important note for this project:** This project uses Vite as a bundler, and the Vite community recommends Vitest instead of Jest. Vitest has the same API as Jest (describe, it, expect, `vi` instead of `jest`), is integrated with Vite, and is significantly faster in Vite projects. What you learn in Jest applies directly to Vitest.
+- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
+- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
 
-## What is it used for?
-Running unit and integration tests quickly with immediate feedback. Mocking modules, timers, and external APIs to isolate the code under test.
+## React Compiler
 
-In the real world: testing that a utility function returns the correct result, that a React component renders the expected state, or that an API call is made with the correct parameters.
+The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
 
-## Types of Tests
+## Expanding the ESLint configuration
 
-| Type | Tests | Speed | Tool |
-|------|-------|-------|------|
-| **Unit test** | Isolated function or module | ⚡⚡⚡ Very fast | Jest/Vitest only |
-| **Integration test** | Multiple modules working together | ⚡⚡ Fast | Jest/Vitest + RTL |
-| **E2E test** | Complete user flow in the browser | ⚡ Slow | Cypress / Playwright |
+If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
 
-## Key Concepts
+```js
+export default defineConfig([
+  globalIgnores(['dist']),
+  {
+    files: ['**/*.{ts,tsx}'],
+    extends: [
+      // Other configs...
 
-**describe** — Groups related tests. Can be nested. For organization: `describe('UserService', () => { ... })`.
+      // Remove tseslint.configs.recommended and replace with this
+      tseslint.configs.recommendedTypeChecked,
+      // Alternatively, use this for stricter rules
+      tseslint.configs.strictTypeChecked,
+      // Optionally, add this for stylistic rules
+      tseslint.configs.stylisticTypeChecked,
 
-**it / test** — Defines an individual test. `it('should return the user by ID', () => { ... })`. `it` and `test` are synonyms.
-
-**expect + matchers** — `expect(value).toBe(expected)` is the basic form. Common matchers: `toBe` (strict equality), `toEqual` (deep equality), `toBeTruthy`, `toContain`, `toThrow`, `toHaveBeenCalledWith`.
-
-**jest.fn()** — Creates a mock function that records its calls. Useful for verifying that a callback was called with the correct arguments.
-
-**jest.mock()** — Replaces an entire module with a mocked version. `jest.mock('./api')` replaces all exports from `./api` with mock functions.
-
-**beforeEach / afterEach** — Setup and teardown per test. `beforeAll` / `afterAll` run once per `describe` block.
-
-## Most Common Matchers
-
-```ts
-expect(2 + 2).toBe(4)                    // Strict equality (===)
-expect({ a: 1 }).toEqual({ a: 1 })       // Deep equality
-expect([1, 2, 3]).toContain(2)            // Array contains the element
-expect(fn).toHaveBeenCalled()            // Function was called
-expect(fn).toHaveBeenCalledWith('arg')   // Called with that argument
-expect(fn).toHaveBeenCalledTimes(3)      // Called N times
-expect(() => fn()).toThrow('error')      // Function throws an error
+      // Other configs...
+    ],
+    languageOptions: {
+      parserOptions: {
+        project: ['./tsconfig.node.json', './tsconfig.app.json'],
+        tsconfigRootDir: import.meta.dirname,
+      },
+      // other options...
+    },
+  },
+])
 ```
 
-## When to use it?
-- Unit tests for pure functions, hooks, and utilities.
-- Integration tests for React components with RTL.
-- In projects not using Vite (CRA, Next.js outside Turbopack).
+You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
 
-## When NOT to use it?
-- In Vite projects: use Vitest (same API, better integration, faster).
-- For E2E: use Cypress or Playwright.
+```js
+// eslint.config.js
+import reactX from 'eslint-plugin-react-x'
+import reactDom from 'eslint-plugin-react-dom'
 
-## Is it worth learning?
-Yes, even though in Vite projects you'll use Vitest, the API is identical. Learning Jest = learning Vitest. The learning curve is low for basic tests and medium for advanced mocking. Testing is a highly valued skill in the job market, especially in companies with mature development practices.
-
-## Alternatives
-
-| Technology | When to choose it |
-|------------|------------------|
-| **Vitest** | Vite projects (this project), same API, much faster |
-| **Jest** (this) | CRA, Next.js, non-Vite projects, most mature |
-| **Mocha + Chai** | Node.js projects that prefer modularity |
-| **Jasmine** | Angular projects (included by default) |
-
-## What does the example in this branch do?
-`src/App.tsx` has components with logic that can be tested. The test files (`.test.ts` or `.test.tsx`) demonstrate `describe`, `it`, `expect` with different matchers, `jest.fn()` for mocking callbacks, and `jest.mock()` for isolating modules. Includes examples of unit tests (pure function) and basic integration tests (component with RTL).
-
-## How to run
-```bash
-git checkout feat/jest-rtl
-cd pweb-react-investigation
-npm install
-npm test        # or npm run test
+export default defineConfig([
+  globalIgnores(['dist']),
+  {
+    files: ['**/*.{ts,tsx}'],
+    extends: [
+      // Other configs...
+      // Enable lint rules for React
+      reactX.configs['recommended-typescript'],
+      // Enable lint rules for React DOM
+      reactDom.configs.recommended,
+    ],
+    languageOptions: {
+      parserOptions: {
+        project: ['./tsconfig.node.json', './tsconfig.app.json'],
+        tsconfigRootDir: import.meta.dirname,
+      },
+      // other options...
+    },
+  },
+])
 ```
-
-## Official Resources
-- [Jest — official documentation](https://jestjs.io/docs/getting-started)
-- [Vitest — for Vite projects](https://vitest.dev/)
-- [Jest vs Vitest differences](https://vitest.dev/guide/migration.html)
