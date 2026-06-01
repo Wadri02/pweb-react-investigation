@@ -1,84 +1,84 @@
 # Jest
 
-## ¿Qué es?
-Jest es un framework de testing para JavaScript creado por Facebook/Meta, lanzado en 2014. Es el test runner más popular del ecosistema JavaScript: incluye runner, assertions, mocking, coverage y watch mode en un solo paquete sin configuración.
+## What is it?
+Jest is a JavaScript testing framework created by Facebook/Meta, released in 2014. It is the most popular test runner in the JavaScript ecosystem: it includes runner, assertions, mocking, coverage, and watch mode in a single package with no configuration needed.
 
-Jest es famoso por su "zero config" approach: funciona sin configuración en la mayoría de proyectos JavaScript y TypeScript. Usa `jsdom` como entorno de DOM simulado, lo que permite testear código del browser sin un browser real.
+Jest is famous for its "zero config" approach: it works without configuration in most JavaScript and TypeScript projects. It uses `jsdom` as a simulated DOM environment, which allows testing browser code without a real browser.
 
-**Nota importante para este proyecto:** Este proyecto usa Vite como bundler, y la comunidad Vite recomienda Vitest en lugar de Jest. Vitest tiene la misma API de Jest (describe, it, expect, vi en lugar de jest), está integrado con Vite, y es significativamente más rápido en proyectos Vite. Lo que aprendés en Jest aplica directamente a Vitest.
+**Important note for this project:** This project uses Vite as a bundler, and the Vite community recommends Vitest instead of Jest. Vitest has the same API as Jest (describe, it, expect, `vi` instead of `jest`), is integrated with Vite, and is significantly faster in Vite projects. What you learn in Jest applies directly to Vitest.
 
-## ¿Para qué sirve?
-Ejecutar tests unitarios e integration tests de forma rápida con feedback inmediato. Mockear módulos, timers y APIs externas para aislar el código bajo prueba.
+## What is it used for?
+Running unit and integration tests quickly with immediate feedback. Mocking modules, timers, and external APIs to isolate the code under test.
 
-En el mundo real: testear que una función de utilidad retorna el resultado correcto, que un componente React renderiza el estado esperado, o que una llamada a API se hace con los parámetros correctos.
+In the real world: testing that a utility function returns the correct result, that a React component renders the expected state, or that an API call is made with the correct parameters.
 
-## Tipos de tests
+## Types of Tests
 
-| Tipo | Qué testea | Herramienta |
-|------|-----------|-------------|
-| **Unit test** | Una función o módulo aislado | Jest/Vitest solo |
-| **Integration test** | Múltiples módulos trabajando juntos | Jest/Vitest + RTL |
-| **E2E test** | Flujo completo del usuario en el browser | Cypress / Playwright |
+| Type | Tests | Speed | Tool |
+|------|-------|-------|------|
+| **Unit test** | Isolated function or module | ⚡⚡⚡ Very fast | Jest/Vitest only |
+| **Integration test** | Multiple modules working together | ⚡⚡ Fast | Jest/Vitest + RTL |
+| **E2E test** | Complete user flow in the browser | ⚡ Slow | Cypress / Playwright |
 
-## Conceptos clave
+## Key Concepts
 
-**describe** — Agrupa tests relacionados. Puede anidarse. Es para organización: `describe('UserService', () => { ... })`.
+**describe** — Groups related tests. Can be nested. For organization: `describe('UserService', () => { ... })`.
 
-**it / test** — Define un test individual. `it('debería retornar el usuario por ID', () => { ... })`. `it` y `test` son sinónimos.
+**it / test** — Defines an individual test. `it('should return the user by ID', () => { ... })`. `it` and `test` are synonyms.
 
-**expect + matchers** — `expect(valor).toBe(esperado)` es la forma básica. Matchers comunes: `toBe` (igualdad estricta), `toEqual` (igualdad profunda), `toBeTruthy`, `toContain`, `toThrow`, `toHaveBeenCalledWith`.
+**expect + matchers** — `expect(value).toBe(expected)` is the basic form. Common matchers: `toBe` (strict equality), `toEqual` (deep equality), `toBeTruthy`, `toContain`, `toThrow`, `toHaveBeenCalledWith`.
 
-**jest.fn()** — Crea un mock de función que registra sus llamadas. Útil para verificar que un callback fue llamado con los argumentos correctos.
+**jest.fn()** — Creates a mock function that records its calls. Useful for verifying that a callback was called with the correct arguments.
 
-**jest.mock()** — Reemplaza un módulo completo con una versión mockeada. `jest.mock('./api')` reemplaza todas las exportaciones de `./api` con funciones mock.
+**jest.mock()** — Replaces an entire module with a mocked version. `jest.mock('./api')` replaces all exports from `./api` with mock functions.
 
-**beforeEach / afterEach** — Setup y teardown por test. `beforeAll` / `afterAll` corren una vez por bloque `describe`.
+**beforeEach / afterEach** — Setup and teardown per test. `beforeAll` / `afterAll` run once per `describe` block.
 
-## Matchers más usados
+## Most Common Matchers
 
 ```ts
-expect(2 + 2).toBe(4)                    // Igualdad estricta (===)
-expect({ a: 1 }).toEqual({ a: 1 })       // Igualdad profunda
-expect([1, 2, 3]).toContain(2)            // El array contiene el elemento
-expect(fn).toHaveBeenCalled()            // La función fue llamada
-expect(fn).toHaveBeenCalledWith('arg')   // Fue llamada con ese argumento
-expect(fn).toHaveBeenCalledTimes(3)      // Fue llamada N veces
-expect(() => fn()).toThrow('error')      // La función lanza un error
+expect(2 + 2).toBe(4)                    // Strict equality (===)
+expect({ a: 1 }).toEqual({ a: 1 })       // Deep equality
+expect([1, 2, 3]).toContain(2)            // Array contains the element
+expect(fn).toHaveBeenCalled()            // Function was called
+expect(fn).toHaveBeenCalledWith('arg')   // Called with that argument
+expect(fn).toHaveBeenCalledTimes(3)      // Called N times
+expect(() => fn()).toThrow('error')      // Function throws an error
 ```
 
-## ¿Cuándo usarlo?
-- Tests unitarios de funciones puras, hooks y utilities.
-- Integration tests de componentes React con RTL.
-- En proyectos que no usan Vite (CRA, Next.js fuera de Turbopack).
+## When to use it?
+- Unit tests for pure functions, hooks, and utilities.
+- Integration tests for React components with RTL.
+- In projects not using Vite (CRA, Next.js outside Turbopack).
 
-## ¿Cuándo NO usarlo?
-- En proyectos Vite: usá Vitest (misma API, mejor integración, más rápido).
-- Para E2E: usá Cypress o Playwright.
+## When NOT to use it?
+- In Vite projects: use Vitest (same API, better integration, faster).
+- For E2E: use Cypress or Playwright.
 
-## ¿Vale la pena aprenderlo?
-Sí, aunque en proyectos Vite usarás Vitest, la API es idéntica. Aprender Jest = aprender Vitest. La curva de aprendizaje es baja para tests básicos y media para mocking avanzado. Testing es una habilidad muy valorada en el mercado laboral, especialmente en empresas con prácticas de desarrollo maduras.
+## Is it worth learning?
+Yes, even though in Vite projects you'll use Vitest, the API is identical. Learning Jest = learning Vitest. The learning curve is low for basic tests and medium for advanced mocking. Testing is a highly valued skill in the job market, especially in companies with mature development practices.
 
-## Alternativas
+## Alternatives
 
-| Tecnología | Cuándo elegirla |
-|------------|-----------------|
-| **Vitest** | Proyectos Vite (este proyecto), misma API, mucho más rápido |
-| **Jest** (esta) | CRA, Next.js, proyectos no-Vite, el más maduro |
-| **Mocha + Chai** | Proyectos Node.js que prefieren modularidad |
-| **Jasmine** | Proyectos Angular (incluido por defecto) |
+| Technology | When to choose it |
+|------------|------------------|
+| **Vitest** | Vite projects (this project), same API, much faster |
+| **Jest** (this) | CRA, Next.js, non-Vite projects, most mature |
+| **Mocha + Chai** | Node.js projects that prefer modularity |
+| **Jasmine** | Angular projects (included by default) |
 
-## Qué hace el ejemplo de esta rama
-`src/App.tsx` tiene componentes con lógica que puede testearse. Los archivos de test (`.test.ts` o `.test.tsx`) demuestran `describe`, `it`, `expect` con distintos matchers, `jest.fn()` para mockear callbacks, y `jest.mock()` para aislar módulos. Incluye ejemplos de unit test (función pura) e integration test básico (componente con RTL).
+## What does the example in this branch do?
+`src/App.tsx` has components with logic that can be tested. The test files (`.test.ts` or `.test.tsx`) demonstrate `describe`, `it`, `expect` with different matchers, `jest.fn()` for mocking callbacks, and `jest.mock()` for isolating modules. Includes examples of unit tests (pure function) and basic integration tests (component with RTL).
 
-## Cómo ejecutar
+## How to run
 ```bash
 git checkout feat/jest-rtl
 cd pweb-react-investigation
 npm install
-npm test        # o npm run test
+npm test        # or npm run test
 ```
 
-## Recursos oficiales
-- [Jest — documentación oficial](https://jestjs.io/docs/getting-started)
-- [Vitest — para proyectos Vite](https://vitest.dev/)
-- [Diferencias Jest vs Vitest](https://vitest.dev/guide/migration.html)
+## Official Resources
+- [Jest — official documentation](https://jestjs.io/docs/getting-started)
+- [Vitest — for Vite projects](https://vitest.dev/)
+- [Jest vs Vitest differences](https://vitest.dev/guide/migration.html)
