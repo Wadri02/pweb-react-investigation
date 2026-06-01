@@ -1,116 +1,170 @@
-import { useState, useEffect, useRef } from 'react'
+import { useState } from 'react'
+import './App.css'
 
-interface Tarea {
-  id: number
-  texto: string
-  completada: boolean
+import UseStateExample from './examples/UseState'
+import UseReducerExample from './examples/UseReducer'
+import UseContextExample from './examples/UseContext'
+import UseRefExample from './examples/UseRef'
+import UseImperativeHandleExample from './examples/UseImperativeHandle'
+import UseEffectExample from './examples/UseEffect'
+import UseLayoutEffectExample from './examples/UseLayoutEffect'
+import UseInsertionEffectExample from './examples/UseInsertionEffect'
+import UseMemoExample from './examples/UseMemo'
+import UseCallbackExample from './examples/UseCallback'
+import UseTransitionExample from './examples/UseTransition'
+import UseDeferredValueExample from './examples/UseDeferredValue'
+import UseIdExample from './examples/UseId'
+import UseDebugValueExample from './examples/UseDebugValue'
+import UseSyncExternalStoreExample from './examples/UseSyncExternalStore'
+import UseOptimisticExample from './examples/UseOptimistic'
+import UseActionStateExample from './examples/UseActionState'
+import UseFormStatusExample from './examples/UseFormStatus'
+import UseExample from './examples/Use'
+
+type HookId =
+  | 'useState' | 'useReducer'
+  | 'useContext'
+  | 'useRef' | 'useImperativeHandle'
+  | 'useEffect' | 'useLayoutEffect' | 'useInsertionEffect'
+  | 'useMemo' | 'useCallback'
+  | 'useTransition' | 'useDeferredValue'
+  | 'useId' | 'useDebugValue' | 'useSyncExternalStore'
+  | 'useOptimistic' | 'useActionState' | 'useFormStatus' | 'use'
+
+interface HookEntry {
+  id: HookId
+  Component: React.ComponentType
+  react19?: boolean
 }
 
-function App() {
-  // useState: lista de tareas
-  const [tareas, setTareas] = useState<Tarea[]>([])
-  const [inputTarea, setInputTarea] = useState('')
+interface Category {
+  name: string
+  hooks: HookEntry[]
+}
 
-  const agregarTarea = () => {
-    if (!inputTarea.trim()) return
-    setTareas(prev => [...prev, { id: Date.now(), texto: inputTarea.trim(), completada: false }])
-    setInputTarea('')
+const CATEGORIES: Category[] = [
+  {
+    name: 'State (Estado)',
+    hooks: [
+      { id: 'useState', Component: UseStateExample },
+      { id: 'useReducer', Component: UseReducerExample },
+    ],
+  },
+  {
+    name: 'Context (Contexto)',
+    hooks: [
+      { id: 'useContext', Component: UseContextExample },
+    ],
+  },
+  {
+    name: 'Ref (Referencias)',
+    hooks: [
+      { id: 'useRef', Component: UseRefExample },
+      { id: 'useImperativeHandle', Component: UseImperativeHandleExample },
+    ],
+  },
+  {
+    name: 'Effect (Efectos)',
+    hooks: [
+      { id: 'useEffect', Component: UseEffectExample },
+      { id: 'useLayoutEffect', Component: UseLayoutEffectExample },
+      { id: 'useInsertionEffect', Component: UseInsertionEffectExample },
+    ],
+  },
+  {
+    name: 'Performance (Rendimiento)',
+    hooks: [
+      { id: 'useMemo', Component: UseMemoExample },
+      { id: 'useCallback', Component: UseCallbackExample },
+    ],
+  },
+  {
+    name: 'Transition (Transiciones)',
+    hooks: [
+      { id: 'useTransition', Component: UseTransitionExample },
+      { id: 'useDeferredValue', Component: UseDeferredValueExample },
+    ],
+  },
+  {
+    name: 'Other (Otros)',
+    hooks: [
+      { id: 'useId', Component: UseIdExample },
+      { id: 'useDebugValue', Component: UseDebugValueExample },
+      { id: 'useSyncExternalStore', Component: UseSyncExternalStoreExample },
+    ],
+  },
+  {
+    name: 'React 19',
+    hooks: [
+      { id: 'useOptimistic', Component: UseOptimisticExample, react19: true },
+      { id: 'useActionState', Component: UseActionStateExample, react19: true },
+      { id: 'useFormStatus', Component: UseFormStatusExample, react19: true },
+      { id: 'use', Component: UseExample, react19: true },
+    ],
+  },
+]
+
+function findComponent(id: HookId): React.ComponentType | null {
+  for (const cat of CATEGORIES) {
+    for (const hook of cat.hooks) {
+      if (hook.id === id) return hook.Component
+    }
   }
+  return null
+}
 
-  const toggleTarea = (id: number) => {
-    setTareas(prev => prev.map(t => t.id === id ? { ...t, completada: !t.completada } : t))
-  }
+export default function App() {
+  const [selected, setSelected] = useState<HookId>('useState')
 
-  const eliminarTarea = (id: number) => {
-    setTareas(prev => prev.filter(t => t.id !== id))
-  }
-
-  // useEffect: timer
-  const [segundos, setSegundos] = useState(0)
-  const [corriendo, setCorriendo] = useState(false)
-
-  useEffect(() => {
-    if (!corriendo) return
-    const intervalo = setInterval(() => {
-      setSegundos(prev => prev + 1)
-    }, 1000)
-    return () => clearInterval(intervalo)
-  }, [corriendo])
-
-  // useRef: focus e historial
-  const inputRef = useRef<HTMLInputElement>(null)
-  const prevValueRef = useRef('')
-  const [valorInput, setValorInput] = useState('')
-
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    prevValueRef.current = valorInput
-    setValorInput(e.target.value)
-  }
+  const CurrentComponent = findComponent(selected)
 
   return (
-    <div style={{ maxWidth: 600, margin: '0 auto', padding: 24, fontFamily: 'sans-serif' }}>
-      <h1>Hooks en React</h1>
-
-      {/* Sección useState */}
-      <section style={{ border: '1px solid #ddd', borderRadius: 8, padding: 16, marginBottom: 24 }}>
-        <h2>useState — Lista de tareas</h2>
-        <div style={{ display: 'flex', gap: 8, marginBottom: 12 }}>
-          <input
-            value={inputTarea}
-            onChange={e => setInputTarea(e.target.value)}
-            onKeyDown={e => e.key === 'Enter' && agregarTarea()}
-            placeholder="Nueva tarea..."
-            style={{ flex: 1, padding: '6px 10px' }}
-          />
-          <button onClick={agregarTarea}>Agregar</button>
+    <div className="app-layout">
+      {/* ── Sidebar ── */}
+      <aside className="sidebar">
+        <div className="sidebar-header">
+          <h1>React Hooks</h1>
+          <span>19 hooks · ejemplos interactivos</span>
         </div>
-        <ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>
-          {tareas.map(tarea => (
-            <li key={tarea.id} style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 6 }}>
-              <input
-                type="checkbox"
-                checked={tarea.completada}
-                onChange={() => toggleTarea(tarea.id)}
-              />
-              <span style={{ flex: 1, textDecoration: tarea.completada ? 'line-through' : 'none', color: tarea.completada ? '#999' : 'inherit' }}>
-                {tarea.texto}
-              </span>
-              <button onClick={() => eliminarTarea(tarea.id)} style={{ color: 'red' }}>Eliminar</button>
-            </li>
-          ))}
-        </ul>
-        {tareas.length === 0 && <p style={{ color: '#999' }}>Sin tareas. ¡Agrega una!</p>}
-      </section>
 
-      {/* Sección useEffect */}
-      <section style={{ border: '1px solid #ddd', borderRadius: 8, padding: 16, marginBottom: 24 }}>
-        <h2>useEffect — Timer</h2>
-        <p style={{ fontSize: 32, fontWeight: 'bold', margin: '8px 0' }}>{segundos}s</p>
-        <div style={{ display: 'flex', gap: 8 }}>
-          <button onClick={() => setCorriendo(true)} disabled={corriendo}>Iniciar</button>
-          <button onClick={() => setCorriendo(false)} disabled={!corriendo}>Detener</button>
-          <button onClick={() => { setCorriendo(false); setSegundos(0) }}>Reset</button>
-        </div>
-      </section>
+        {CATEGORIES.map(cat => (
+          <div key={cat.name} className="category">
+            <div className="category-title">{cat.name}</div>
+            {cat.hooks.map(hook => (
+              <button
+                key={hook.id}
+                className={`hook-btn ${selected === hook.id ? 'active' : ''}`}
+                onClick={() => setSelected(hook.id)}
+              >
+                {hook.id}
+                {hook.react19 && (
+                  <span
+                    style={{
+                      marginLeft: 6,
+                      fontSize: 9,
+                      fontFamily: 'system-ui, sans-serif',
+                      background: '#4f46e5',
+                      color: 'white',
+                      padding: '1px 5px',
+                      borderRadius: 10,
+                      fontWeight: 700,
+                      letterSpacing: 0.3,
+                      verticalAlign: 'middle',
+                    }}
+                  >
+                    19
+                  </span>
+                )}
+              </button>
+            ))}
+          </div>
+        ))}
+      </aside>
 
-      {/* Sección useRef */}
-      <section style={{ border: '1px solid #ddd', borderRadius: 8, padding: 16 }}>
-        <h2>useRef — Focus y valor anterior</h2>
-        <div style={{ display: 'flex', gap: 8, marginBottom: 12 }}>
-          <input
-            ref={inputRef}
-            value={valorInput}
-            onChange={handleInputChange}
-            placeholder="Escribe algo..."
-            style={{ flex: 1, padding: '6px 10px' }}
-          />
-          <button onClick={() => inputRef.current?.focus()}>Focus</button>
-        </div>
-        <p>Valor actual: <strong>{valorInput || '(vacío)'}</strong></p>
-        <p>Valor anterior: <strong>{prevValueRef.current || '(ninguno)'}</strong></p>
-      </section>
+      {/* ── Content panel ── */}
+      <main className="content">
+        {CurrentComponent && <CurrentComponent key={selected} />}
+      </main>
     </div>
   )
 }
-
-export default App
