@@ -1,71 +1,71 @@
 # MobX
 
-## ¿Qué es?
-MobX es una librería de gestión de estado reactivo para JavaScript y TypeScript, creada por Michel Weststrate en 2015. Es una de las librerías de estado más maduras del ecosistema React y se usa ampliamente en aplicaciones enterprise. Su filosofía se basa en la programación reactiva: en lugar de describir cómo actualizar el estado, describís relaciones entre datos y MobX se encarga de propagarlas automáticamente.
+## What is it?
+MobX is a reactive state management library for JavaScript and TypeScript, created by Michel Weststrate in 2015. It is one of the most mature state libraries in the React ecosystem and is widely used in enterprise applications. Its philosophy is based on reactive programming: instead of describing how to update state, you describe relationships between data and MobX automatically propagates changes.
 
-MobX funciona con el patrón observable/observer: los objetos de estado son observables, y los componentes que los leen son observers. Cuando un observable cambia, todos sus observers se actualizan automáticamente. Esto se logra mediante proxies de JavaScript que rastrean qué propiedades se leen y cuándo cambian.
+MobX works with the observable/observer pattern: state objects are observable, and components that read them are observers. When an observable changes, all its observers update automatically. This is achieved through JavaScript proxies that track which properties are read and when they change.
 
-A diferencia de Zustand (que es funcional), MobX adopta un modelo imperativo orientado a objetos: podés mutar el estado directamente y MobX lo rastrea.
+Unlike Zustand (which is functional), MobX adopts an imperative object-oriented model: you can mutate state directly and MobX tracks it.
 
-## ¿Para qué sirve?
-Gestionar estado complejo con relaciones entre datos, donde múltiples valores derivados dependen de una fuente de verdad. Ideal cuando el dominio del problema encaja naturalmente con un modelo de objetos.
+## What is it used for?
+Managing complex state with relationships between data, where multiple derived values depend on a single source of truth. Ideal when the problem domain naturally fits an object model.
 
-En el mundo real: una aplicación de gestión de tareas donde el total de tareas completadas, el porcentaje de progreso y las tareas filtradas se derivan automáticamente del array principal. Con MobX `computed`, estos valores se recalculan solo cuando el array cambia.
+In the real world: a task management application where the total completed tasks, the progress percentage, and filtered tasks are automatically derived from the main array. With MobX `computed`, these values recalculate only when the array changes.
 
-## Conceptos clave
+## Key Concepts
 
-**observable** — Marca un valor (objeto, array, Map, primitivo) como observable. Cualquier cambio en él notifica a los observers. Con la API moderna, usás `makeAutoObservable` en la clase.
+**observable** — Marks a value (object, array, Map, primitive) as observable. Any change in it notifies observers. With the modern API, you use `makeAutoObservable` in the class.
 
-**observer** — HOC o función de MobX-React que envuelve un componente de React. El componente re-renderiza solo cuando los observables que leyó durante el último render cambian.
+**observer** — HOC or MobX-React function that wraps a React component. The component re-renders only when the observables it read during the last render change.
 
-**action** — Función que modifica observables. MobX agrupa todas las mutaciones en una acción como una transacción atómica, evitando renders intermedios.
+**action** — Function that modifies observables. MobX groups all mutations in an action as an atomic transaction, avoiding intermediate renders.
 
-**computed** — Valor derivado de observables. Se recalcula automáticamente y solo cuando sus dependencias cambian. Funciona como un getter memoizado.
+**computed** — Value derived from observables. Recalculates automatically and only when its dependencies change. Works like a memoized getter.
 
-**reaction / autorun** — Efectos secundarios que corren automáticamente cuando sus observables cambian. `autorun` corre inmediatamente; `reaction` corre cuando un valor específico cambia.
+**reaction / autorun** — Side effects that run automatically when their observables change. `autorun` runs immediately; `reaction` runs when a specific value changes.
 
-## Estado imperativo (MobX) vs funcional (Zustand)
+## Imperative State (MobX) vs Functional (Zustand)
 
-| Aspecto | MobX (imperativo) | Zustand (funcional) |
-|---------|-------------------|---------------------|
-| Mutación | Directa: `store.count++` | Con setter: `set(s => ({count: s.count + 1}))` |
-| Derivaciones | `computed` automático | Manual con selectores |
-| Rastreo de dependencias | Automático por proxies | Manual (el dev decide qué ver) |
-| Boilerplate | Bajo con `makeAutoObservable` | Muy bajo |
-| Debugging | Más complejo (magia de proxies) | Más predecible |
-| Paradigma | OOP / reactivo | Funcional / explícito |
+| Aspect | MobX (imperative) | Zustand (functional) |
+|--------|-------------------|---------------------|
+| Mutation | Direct: `store.count++` | With setter: `set(s => ({count: s.count + 1}))` |
+| Derivations | Automatic `computed` | Manual with selectors |
+| Dependency tracking | Automatic via proxies | Manual (dev decides what to watch) |
+| Boilerplate | Low with `makeAutoObservable` | Very low |
+| Debugging | More complex (proxy magic) | More predictable |
+| Paradigm | OOP / reactive | Functional / explicit |
 
-## ¿Cuándo usarlo?
-- Dominios complejos con muchas relaciones entre datos (finanzas, simulaciones, spreadsheets).
-- Equipos con background en OOP que prefieren el modelo de clases.
-- Cuando tenés muchos valores derivados (`computed`) que dependen unos de otros.
-- Apps enterprise con modelos de dominio ricos.
+## When to use it?
+- Complex domains with many data relationships (finance, simulations, spreadsheets).
+- Teams with OOP background who prefer the class model.
+- When you have many derived values (`computed`) that depend on each other.
+- Enterprise apps with rich domain models.
 
-## ¿Cuándo NO usarlo?
-- Proyectos simples o medianos donde Zustand es suficiente.
-- Equipos que prefieren el paradigma funcional.
-- Cuando la "magia" de los proxies dificulta el debugging para el equipo.
-- Apps con mucho estado del servidor: combinarlo con TanStack Query es mejor que usarlo para todo.
+## When NOT to use it?
+- Simple or medium projects where Zustand is sufficient.
+- Teams that prefer the functional paradigm.
+- When proxy "magic" makes debugging harder for the team.
+- Apps with a lot of server state: combining it with TanStack Query is better than using it for everything.
 
-## ¿Vale la pena aprenderlo?
-MobX tiene una curva de aprendizaje media: los conceptos de observable/computed/action son simples, pero entender cuándo React re-renderiza y cómo evitar problemas de reactividad requiere experiencia. Sigue siendo muy demandado en proyectos enterprise que lo adoptaron antes de que Zustand se popularizara. Para proyectos nuevos, la tendencia del mercado favoreció Zustand.
+## Is it worth learning?
+MobX has a medium learning curve: the observable/computed/action concepts are simple, but understanding when React re-renders and how to avoid reactivity issues requires experience. It's still highly demanded in enterprise projects that adopted it before Zustand became popular. For new projects, the market trend has favored Zustand.
 
-## Alternativas
+## Alternatives
 
-| Tecnología | Cuándo elegirla |
-|------------|-----------------|
-| **MobX** (esta) | OOP, muchos derivados, dominio complejo, proyecto enterprise |
-| **Zustand** | API funcional simple, mejor rendimiento por defecto, menos "magia" |
-| **Redux Toolkit** | Equipos grandes, DevTools completos, middlewares |
-| **Context API** | Sin dependencias, estado estático |
+| Technology | When to choose it |
+|------------|------------------|
+| **MobX** (this) | OOP, many derived values, complex domain, enterprise project |
+| **Zustand** | Simple functional API, better default performance, less "magic" |
+| **Redux Toolkit** | Large teams, full DevTools, middlewares |
+| **Context API** | No dependencies, static state |
 
-## ¿MobX o Zustand?
-Para proyectos nuevos, Zustand es la recomendación predeterminada: más simple, más predecible, mejor alineado con el paradigma funcional de React moderno. MobX es la elección correcta cuando el modelo de dominio es complejo y orientado a objetos, o cuando el equipo tiene experiencia previa con el patrón reactivo (RxJS, Angular, Vue 2). No hay respuesta universal: si el dominio encaja con el modelo observable, MobX puede ser más natural que forzar todo en funciones puras.
+## MobX or Zustand?
+For new projects, Zustand is the default recommendation: simpler, more predictable, better aligned with modern React's functional paradigm. MobX is the right choice when the domain model is complex and object-oriented, or when the team has prior experience with the reactive pattern (RxJS, Angular, Vue 2). There is no universal answer: if the domain naturally fits the observable model, MobX can be more natural than forcing everything into pure functions.
 
-## Qué hace el ejemplo de esta rama
-`src/App.tsx` define un store de MobX con `makeAutoObservable`, exponiendo observables y actions. Los componentes están envueltos con `observer` de `mobx-react-lite` para suscribirse automáticamente a los cambios. El ejemplo muestra la diferencia entre mutación directa y las actualizaciones optimizadas de renders.
+## What does the example in this branch do?
+`src/App.tsx` defines a MobX store with `makeAutoObservable`, exposing observables and actions. Components are wrapped with `observer` from `mobx-react-lite` to automatically subscribe to changes. The example shows the difference between direct mutation and optimized render updates.
 
-## Cómo ejecutar
+## How to run
 ```bash
 git checkout feat/mobx
 cd pweb-react-investigation
@@ -73,6 +73,6 @@ npm install
 npm run dev
 ```
 
-## Recursos oficiales
-- [MobX — documentación oficial](https://mobx.js.org/)
+## Official Resources
+- [MobX — official documentation](https://mobx.js.org/)
 - [mobx-react-lite](https://github.com/mobxjs/mobx/tree/main/packages/mobx-react-lite)
