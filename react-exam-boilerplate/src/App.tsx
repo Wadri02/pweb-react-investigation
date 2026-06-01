@@ -1,121 +1,110 @@
 import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from './assets/vite.svg'
-import heroImg from './assets/hero.png'
-import './App.css'
+import {
+  Box,
+  Typography,
+  Stack,
+  TextField,
+  Button,
+  Alert,
+} from '@mui/material'
+
+interface Errors {
+  email?: string
+  password?: string
+}
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+  const [errors, setErrors] = useState<Errors>({})
+  const [loading, setLoading] = useState(false)
+  const [exito, setExito] = useState(false)
+
+  const validar = (): Errors => {
+    const e: Errors = {}
+    if (!email.includes('@')) e.email = 'El email debe incluir @'
+    if (password.length < 6) e.password = 'La contraseña debe tener mínimo 6 caracteres'
+    return e
+  }
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+    const errs = validar()
+    if (Object.keys(errs).length > 0) {
+      setErrors(errs)
+      return
+    }
+    setErrors({})
+    setLoading(true)
+    await new Promise(r => setTimeout(r, 1000))
+    setLoading(false)
+    setExito(true)
+  }
 
   return (
-    <>
-      <section id="center">
-        <div className="hero">
-          <img src={heroImg} className="base" width="170" height="179" alt="" />
-          <img src={reactLogo} className="framework" alt="React logo" />
-          <img src={viteLogo} className="vite" alt="Vite logo" />
-        </div>
-        <div>
-          <h1>Get started</h1>
-          <p>
-            Edit <code>src/App.tsx</code> and save to test <code>HMR</code>
-          </p>
-        </div>
-        <button
-          type="button"
-          className="counter"
-          onClick={() => setCount((count) => count + 1)}
-        >
-          Count is {count}
-        </button>
-      </section>
+    <Box
+      sx={{
+        minHeight: '100vh',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        bgcolor: '#f5f5f5',
+      }}
+    >
+      <Box
+        component="form"
+        onSubmit={handleSubmit}
+        sx={{
+          width: 400,
+          bgcolor: 'white',
+          borderRadius: 3,
+          p: 4,
+          boxShadow: '0 4px 20px rgba(0,0,0,0.08)',
+        }}
+      >
+        <Typography variant="h5" sx={{ mb: 3, fontWeight: 600 }}>
+          Iniciar sesión
+        </Typography>
 
-      <div className="ticks"></div>
+        {exito && (
+          <Alert severity="success" sx={{ mb: 2 }}>
+            ¡Login exitoso! Bienvenido.
+          </Alert>
+        )}
 
-      <section id="next-steps">
-        <div id="docs">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#documentation-icon"></use>
-          </svg>
-          <h2>Documentation</h2>
-          <p>Your questions, answered</p>
-          <ul>
-            <li>
-              <a href="https://vite.dev/" target="_blank">
-                <img className="logo" src={viteLogo} alt="" />
-                Explore Vite
-              </a>
-            </li>
-            <li>
-              <a href="https://react.dev/" target="_blank">
-                <img className="button-icon" src={reactLogo} alt="" />
-                Learn more
-              </a>
-            </li>
-          </ul>
-        </div>
-        <div id="social">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#social-icon"></use>
-          </svg>
-          <h2>Connect with us</h2>
-          <p>Join the Vite community</p>
-          <ul>
-            <li>
-              <a href="https://github.com/vitejs/vite" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#github-icon"></use>
-                </svg>
-                GitHub
-              </a>
-            </li>
-            <li>
-              <a href="https://chat.vite.dev/" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#discord-icon"></use>
-                </svg>
-                Discord
-              </a>
-            </li>
-            <li>
-              <a href="https://x.com/vite_js" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#x-icon"></use>
-                </svg>
-                X.com
-              </a>
-            </li>
-            <li>
-              <a href="https://bsky.app/profile/vite.dev" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#bluesky-icon"></use>
-                </svg>
-                Bluesky
-              </a>
-            </li>
-          </ul>
-        </div>
-      </section>
-
-      <div className="ticks"></div>
-      <section id="spacer"></section>
-    </>
+        <Stack spacing={3}>
+          <TextField
+            label="Email"
+            type="email"
+            variant="outlined"
+            fullWidth
+            value={email}
+            onChange={e => setEmail(e.target.value)}
+            error={!!errors.email}
+            helperText={errors.email ?? ' '}
+          />
+          <TextField
+            label="Contraseña"
+            type="password"
+            variant="outlined"
+            fullWidth
+            value={password}
+            onChange={e => setPassword(e.target.value)}
+            error={!!errors.password}
+            helperText={errors.password ?? ' '}
+          />
+          <Button
+            type="submit"
+            variant="contained"
+            fullWidth
+            size="large"
+            disabled={loading}
+          >
+            {loading ? 'Ingresando...' : 'Ingresar'}
+          </Button>
+        </Stack>
+      </Box>
+    </Box>
   )
 }
 
