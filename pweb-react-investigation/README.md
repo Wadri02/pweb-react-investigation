@@ -1,77 +1,77 @@
 # TanStack Router
 
-## ¿Qué es?
-TanStack Router es una librería de routing type-safe para React, creada por Tanner Linsley (el mismo autor de TanStack Query). Fue publicada en versión estable en 2023 como respuesta a la falta de type-safety en React Router: en React Router, los parámetros de ruta son siempre `string | undefined` y los search params son `Record<string, string>`, sin inferencia de tipos.
+## What is it?
+TanStack Router is a type-safe routing library for React, created by Tanner Linsley (the same author as TanStack Query). It was published in stable version in 2023 as a response to the lack of type-safety in React Router: in React Router, route params are always `string | undefined` and search params are `Record<string, string>`, with no type inference.
 
-TanStack Router está diseñado desde cero para TypeScript: cada ruta, parámetro, search param y loader tiene tipos inferidos automáticamente. El IDE conoce exactamente qué params tiene `/users/$userId` y cuál es su tipo.
+TanStack Router is designed from the ground up for TypeScript: every route, parameter, search param, and loader has automatically inferred types. The IDE knows exactly what params `/users/$userId` has and what their types are.
 
-También incluye integración nativa con TanStack Query, manejo de search params como estado tipado (reemplazando `useState` para filtros en URL), y soporte para SSR.
+It also includes native integration with TanStack Query, handling of search params as typed state (replacing `useState` for filters in the URL), and SSR support.
 
-## ¿Para qué sirve?
-Routing type-safe en aplicaciones React/TypeScript donde la corrección de tipos en la navegación es crítica. Especialmente útil cuando los search params son complejos (filtros, paginación, ordenamiento) y querés que estén en la URL para que sean bookmarkable.
+## What is it used for?
+Type-safe routing in React/TypeScript applications where correctness of types in navigation is critical. Especially useful when search params are complex (filters, pagination, sorting) and you want them in the URL to be bookmarkable.
 
-En el mundo real: una tabla de productos con filtros de categoría, rango de precio y ordenamiento. Con TanStack Router, estos filtros viven en los search params con tipos `{ category: string, minPrice: number, sort: 'asc' | 'desc' }` — inferidos, validados, y sincronizan con la URL automáticamente.
+In the real world: a product table with category filters, price range, and sorting. With TanStack Router, these filters live in search params with types `{ category: string, minPrice: number, sort: 'asc' | 'desc' }` — inferred, validated, and automatically synced with the URL.
 
-## ¿Qué significa type-safe routing?
+## What does type-safe routing mean?
 
-Con React Router (sin tipos):
+With React Router (without types):
 ```tsx
-// ❌ Los params son string | undefined, sin validación
+// ❌ Params are string | undefined, no validation
 const { userId } = useParams() // userId: string | undefined
-navigate('/users/123') // Sin verificar que /users/:userId exista
+navigate('/users/123') // No check that /users/:userId exists
 ```
 
-Con TanStack Router:
+With TanStack Router:
 ```tsx
-// ✅ Tipos inferidos de la definición de rutas
-const { userId } = Route.useParams() // userId: string (garantizado)
-navigate({ to: '/users/$userId', params: { userId: '123' } }) // Error TypeScript si la ruta no existe
+// ✅ Types inferred from the route definition
+const { userId } = Route.useParams() // userId: string (guaranteed)
+navigate({ to: '/users/$userId', params: { userId: '123' } }) // TypeScript error if route doesn't exist
 ```
 
-Si renombrás un parámetro, TypeScript te avisa en todos los lugares que lo usan.
+If you rename a parameter, TypeScript warns you in every place that uses it.
 
-## Conceptos clave
+## Key Concepts
 
-**Route Tree** — La estructura de rutas se define como un árbol de objetos `createRoute`. Hay un `rootRoute` y las rutas hijas se encadenan con `createRoute({ getParentRoute })`.
+**Route Tree** — The route structure is defined as a tree of `createRoute` objects. There is a `rootRoute` and child routes are chained with `createRoute({ getParentRoute })`.
 
-**createRouter** — Combina el árbol de rutas en un objeto router tipado. Este tipo se registra globalmente con `declare module` para que toda la app tenga los mismos tipos.
+**createRouter** — Combines the route tree into a typed router object. This type is registered globally with `declare module` so the entire app shares the same types.
 
-**Route.useParams** — Hook del propio objeto `Route` (no del router genérico) que retorna los parámetros tipados de esa ruta específica.
+**Route.useParams** — Hook on the `Route` object itself (not the generic router) that returns the typed parameters for that specific route.
 
-**Route.useSearch** — Similar a `useParams` pero para los search params. Los tipos se definen con un `validateSearch` que puede usar Zod para validación.
+**Route.useSearch** — Similar to `useParams` but for search params. Types are defined with a `validateSearch` that can use Zod for validation.
 
-**Loaders** — Cada ruta puede tener un `loader` que carga datos antes de renderizar. Se integra con TanStack Query para prefetch y caché.
+**Loaders** — Each route can have a `loader` that fetches data before rendering. Integrates with TanStack Query for prefetch and caching.
 
-## ¿Cuándo usarlo?
-- Proyectos TypeScript donde la type-safety de la navegación importa.
-- Apps con search params complejos que necesitás tipados y en la URL.
-- Cuando empezás un proyecto nuevo y querés el mejor DX con TypeScript.
-- Equipos que ya usan TanStack Query y quieren integración nativa.
+## When to use it?
+- TypeScript projects where type-safety in navigation matters.
+- Apps with complex search params that you need typed and in the URL.
+- When starting a new project and you want the best TypeScript DX.
+- Teams already using TanStack Query who want native integration.
 
-## ¿Cuándo NO usarlo?
-- Proyectos JavaScript sin TypeScript (pierde su principal ventaja).
-- Apps con React Router v6 ya establecido sin pain points de tipos.
-- Si el equipo no está familiarizado con la configuración inicial (más verbose que React Router).
+## When NOT to use it?
+- JavaScript projects without TypeScript (loses its main advantage).
+- Apps with already established React Router v6 without type pain points.
+- If the team isn't familiar with the initial configuration (more verbose than React Router).
 
-## ¿Vale la pena aprenderlo?
-Para proyectos TypeScript nuevos, sí. La configuración inicial es más compleja que React Router, pero el DX resultante es superior. La demanda laboral todavía es menor que React Router, pero crece rápido. En 2024-2025 se convirtió en la recomendación de la comunidad para proyectos TypeScript-first.
+## Is it worth learning?
+For new TypeScript projects, yes. The initial setup is more complex than React Router, but the resulting DX is superior. Job market demand is still lower than React Router, but growing fast. In 2024-2025 it became the community recommendation for TypeScript-first projects.
 
-## Alternativas
+## Alternatives
 
-| Tecnología | Cuándo elegirla |
-|------------|-----------------|
-| **TanStack Router** (esta) | TypeScript-first, search params tipados, proyecto nuevo |
-| **React Router v6** | Ecosistema maduro, proyecto existente, sin necesidad de tipos estrictos |
-| **Next.js Router** | SSR/SSG, file-based routing, meta-framework completo |
-| **Wouter** | Minimalista, sin TypeScript avanzado, bundle muy pequeño |
+| Technology | When to choose it |
+|------------|------------------|
+| **TanStack Router** (this) | TypeScript-first, typed search params, new project |
+| **React Router v6** | Mature ecosystem, existing project, no need for strict types |
+| **Next.js Router** | SSR/SSG, file-based routing, full meta-framework |
+| **Wouter** | Minimalist, no advanced TypeScript, very small bundle |
 
-## ¿TanStack Router o React Router?
-Si el proyecto usa TypeScript y estás empezando desde cero, TanStack Router ofrece una experiencia de tipos inigualable. Los errores de ruta se detectan en compilación, los refactors son seguros, y los search params tipados reemplazan el patrón manual de `useState` + `URLSearchParams`. React Router sigue siendo válido para proyectos existentes y equipos que valoran la familiaridad. La decisión clave es: ¿cuánto TypeScript strictness querés en tu navegación?
+## TanStack Router or React Router?
+If the project uses TypeScript and you're starting from scratch, TanStack Router offers an unmatched type experience. Route errors are caught at compile time, refactors are safe, and typed search params replace the manual `useState` + `URLSearchParams` pattern. React Router remains valid for existing projects and teams that value familiarity. The key decision is: how much TypeScript strictness do you want in your navigation?
 
-## Qué hace el ejemplo de esta rama
-`src/App.tsx` define un árbol de rutas con `createRootRoute` y rutas anidadas, registra el router con tipos globales, y demuestra navegación tipada con `useNavigate` y `Link`. Muestra cómo los parámetros dinámicos y search params son inferidos por TypeScript.
+## What does the example in this branch do?
+`src/App.tsx` defines a route tree with `createRootRoute` and nested routes, registers the router with global types, and demonstrates typed navigation with `useNavigate` and `Link`. It shows how dynamic parameters and search params are inferred by TypeScript.
 
-## Cómo ejecutar
+## How to run
 ```bash
 git checkout feat/tanstack-router
 cd pweb-react-investigation
@@ -79,6 +79,6 @@ npm install
 npm run dev
 ```
 
-## Recursos oficiales
-- [TanStack Router — documentación oficial](https://tanstack.com/router/latest)
-- [Guía de inicio rápido](https://tanstack.com/router/latest/docs/framework/react/quick-start)
+## Official Resources
+- [TanStack Router — official documentation](https://tanstack.com/router/latest)
+- [Quick start guide](https://tanstack.com/router/latest/docs/framework/react/quick-start)
