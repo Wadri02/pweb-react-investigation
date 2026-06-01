@@ -126,8 +126,10 @@ pweb-react-investigation/          ← git repository root
     └── package.json
 ```
 
-## Author
+## Authors
 
-**Wadri** — Systems Engineering Student, Universidad Central del Ecuador (UCE)
+**Nayeli Guayas** 
+**Washington Lumbi** 
+**Luis Paspuezan** 
 
-- GitHub: [@Wadri02](https://github.com/Wadri02)
+
