@@ -1,21 +1,21 @@
 # TanStack Query
 
-## ¿Qué es?
-TanStack Query (antes React Query) es una librería para gestionar el estado del servidor en aplicaciones React. Fue creada por Tanner Linsley y lanzada en 2019. En 2022 fue renombrada a TanStack Query v4 y se volvió agnóstica al framework (soporta Vue, Svelte, Angular además de React).
+## What is it?
+TanStack Query (formerly React Query) is a library for managing server state in React applications. It was created by Tanner Linsley and released in 2019. In 2022 it was renamed TanStack Query v4 and became framework-agnostic (supporting Vue, Svelte, Angular in addition to React).
 
-El problema que resuelve: la mayoría de los desarrolladores usan `useState` + `useEffect` para hacer fetch de datos, pero esto requiere manejar manualmente loading, error, caché, revalidación, deduplicación de requests y sincronización. TanStack Query resuelve todo esto con una API declarativa.
+The problem it solves: most developers use `useState` + `useEffect` to fetch data, but this requires manually handling loading, error, cache, revalidation, request deduplication, and synchronization. TanStack Query resolves all of this with a declarative API.
 
-La distinción fundamental que introduce es la diferencia entre **estado del cliente** (lo que el usuario ve/interactúa: formularios, UI state) y **estado del servidor** (datos que viven en una base de datos remota). Son categorías diferentes con necesidades distintas: el estado del servidor necesita sincronización, caché y actualizaciones periódicas.
+The fundamental distinction it introduces is the difference between **client state** (what the user sees/interacts with: forms, UI state) and **server state** (data that lives in a remote database). These are different categories with different needs: server state requires synchronization, caching, and periodic updates.
 
-## ¿Para qué sirve?
-Fetching, caché, sincronización y actualización de datos del servidor. Elimina el patrón manual de `useEffect` + `useState` para fetch.
+## What is it used for?
+Fetching, caching, synchronizing, and updating server data. Eliminates the manual `useEffect` + `useState` pattern for data fetching.
 
-En el mundo real: una lista de productos que se carga al montar, se refresca cuando el usuario vuelve a la pestaña, muestra un spinner mientras carga, muestra el error si falla, y se actualiza automáticamente después de agregar un producto nuevo.
+In the real world: a product list that loads on mount, refreshes when the user returns to the tab, shows a spinner while loading, displays errors on failure, and automatically updates after adding a new product.
 
-## Por qué NO usar useEffect para fetch
+## Why NOT to use useEffect for fetching
 
 ```tsx
-// ❌ El patrón manual tiene problemas
+// ❌ The manual pattern has problems
 useEffect(() => {
   setLoading(true)
   fetch('/api/users')
@@ -23,66 +23,66 @@ useEffect(() => {
     .then(data => setUsers(data))
     .catch(err => setError(err))
     .finally(() => setLoading(false))
-}, []) // Sin caché, sin deduplicación, sin revalidación, race conditions posibles
+}, []) // No cache, no deduplication, no revalidation, possible race conditions
 ```
 
 ```tsx
-// ✅ Con TanStack Query
+// ✅ With TanStack Query
 const { data, isLoading, error } = useQuery({
   queryKey: ['users'],
   queryFn: () => fetch('/api/users').then(r => r.json()),
 })
-// Caché automático, deduplicación, revalidación al foco, retry automático
+// Automatic cache, deduplication, focus revalidation, automatic retry
 ```
 
-## Conceptos clave
+## Key Concepts
 
-**queryKey** — Array único que identifica la query en el caché. Cuando cambia, se refetch automáticamente. Ejemplo: `['users', userId]` para un usuario específico.
+**queryKey** — Unique array that identifies the query in the cache. When it changes, an automatic refetch is triggered. Example: `['users', userId]` for a specific user.
 
-**queryFn** — Función async que retorna los datos. Puede ser cualquier promesa: fetch, axios, GraphQL, etc.
+**queryFn** — Async function that returns data. Can be any promise: fetch, axios, GraphQL, etc.
 
-**staleTime** — Tiempo en ms que los datos se consideran frescos. Durante ese tiempo no se hace refetch aunque el componente se monte de nuevo. Default: 0 (siempre stale).
+**staleTime** — Time in ms that data is considered fresh. During that time no refetch occurs even if the component mounts again. Default: 0 (always stale).
 
-**invalidateQueries** — Marca queries como stale y dispara un refetch. Se usa después de mutaciones para actualizar los datos del servidor en el caché.
+**invalidateQueries** — Marks queries as stale and triggers a refetch. Used after mutations to update server data in the cache.
 
-**useMutation** — Hook para operaciones que modifican datos (POST, PUT, DELETE). Tiene callbacks `onSuccess`, `onError`, `onSettled` para reaccionar al resultado.
+**useMutation** — Hook for data-modifying operations (POST, PUT, DELETE). Has `onSuccess`, `onError`, `onSettled` callbacks to react to the result.
 
-## Estado del servidor vs estado del cliente
+## Server State vs Client State
 
-| Aspecto | Estado del servidor | Estado del cliente |
-|---------|--------------------|--------------------|
-| Origen | Base de datos remota | Interacción del usuario |
-| Sincronización | Necesaria (puede estar desactualizado) | No necesaria |
-| Herramienta | TanStack Query | useState, Zustand |
-| Ejemplos | Lista de usuarios, productos, posts | Filtro activo, modal abierto, form inputs |
+| Aspect | Server State | Client State |
+|--------|-------------|-------------|
+| Origin | Remote database | User interaction |
+| Synchronization | Needed (may be stale) | Not needed |
+| Tool | TanStack Query | useState, Zustand |
+| Examples | User list, products, posts | Active filter, open modal, form inputs |
 
-## ¿Cuándo usarlo?
-- Siempre que hagas fetch de datos en una app React.
-- Apps con operaciones CRUD donde necesitás que la UI se sincronice con el servidor.
-- Cuando necesitás caché, paginación, infinite scroll o prefetching.
+## When to use it?
+- Whenever you fetch data in a React app.
+- Apps with CRUD operations where the UI needs to sync with the server.
+- When you need caching, pagination, infinite scroll, or prefetching.
 
-## ¿Cuándo NO usarlo?
-- Apps sin backend (solo estado local).
-- Si tu fetch es extremadamente simple y no necesitás caché ni sincronización.
-- Para estado del cliente puro (formularios, UI): usá `useState` o Zustand.
+## When NOT to use it?
+- Apps without a backend (client-only state).
+- If your fetch is extremely simple and you don't need caching or synchronization.
+- For pure client state (forms, UI): use `useState` or Zustand.
 
-## ¿Vale la pena aprenderlo?
-Sí, es una de las librerías más impactantes para la DX en React. La curva de aprendizaje de `useQuery` es baja. `useMutation` con invalidación requiere entender el modelo de caché, lo que toma algo más de tiempo. Es muy demandada en el mercado laboral, especialmente en combinación con Next.js o React con un backend REST/GraphQL.
+## Is it worth learning?
+Yes, it's one of the most impactful libraries for DX in React. The learning curve for `useQuery` is low. `useMutation` with invalidation requires understanding the cache model, which takes a bit more time. Highly demanded in the job market, especially in combination with Next.js or React with a REST/GraphQL backend.
 
-## Alternativas
+## Alternatives
 
-| Tecnología | Cuándo elegirla |
-|------------|-----------------|
-| **TanStack Query** (esta) | Caché, sincronización, refetch automático, REST/cualquier API |
-| **SWR** | API más simple, solo necesitás básicos, menor bundle |
-| **RTK Query** | Ya usás Redux Toolkit, querés todo integrado |
-| **Apollo Client** | API es GraphQL específicamente |
-| **useEffect manual** | Script único, sin caché, sin equipo |
+| Technology | When to choose it |
+|------------|------------------|
+| **TanStack Query** (this) | Cache, sync, auto-refetch, REST/any API |
+| **SWR** | Simpler API, only need basics, smaller bundle |
+| **RTK Query** | Already using Redux Toolkit, want everything integrated |
+| **Apollo Client** | API is specifically GraphQL |
+| **Manual useEffect** | One-off script, no cache, no team |
 
-## Qué hace el ejemplo de esta rama
-`src/App.tsx` configura `QueryClientProvider` y usa `useQuery` para obtener datos de una API pública (como JSONPlaceholder) mostrando estados de loading y error. También puede incluir `useMutation` para agregar o eliminar un item con invalidación automática del caché.
+## What does the example in this branch do?
+`src/App.tsx` configures `QueryClientProvider` and uses `useQuery` to fetch data from a public API (like JSONPlaceholder) showing loading and error states. It may also include `useMutation` to add or delete an item with automatic cache invalidation.
 
-## Cómo ejecutar
+## How to run
 ```bash
 git checkout feat/tanstack-query
 cd pweb-react-investigation
@@ -90,6 +90,6 @@ npm install
 npm run dev
 ```
 
-## Recursos oficiales
-- [TanStack Query — documentación oficial](https://tanstack.com/query/latest)
-- [Por qué TanStack Query](https://tanstack.com/query/latest/docs/framework/react/overview)
+## Official Resources
+- [TanStack Query — official documentation](https://tanstack.com/query/latest)
+- [Why TanStack Query](https://tanstack.com/query/latest/docs/framework/react/overview)
