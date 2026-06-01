@@ -1,89 +1,89 @@
 # React Hooks
 
-## ¿Qué es?
-Los Hooks son funciones especiales de React que permiten usar estado, efectos y otras características de React en componentes funcionales. Fueron introducidos en React 16.8 (febrero 2019) por el equipo de Facebook/Meta como respuesta a los problemas de los componentes de clase: lógica difícil de reutilizar, componentes gigantes y clases confusas para principiantes.
+## What is it?
+Hooks are special React functions that allow you to use state, effects, and other React features in functional components. They were introduced in React 16.8 (February 2019) by the Facebook/Meta team as a response to the problems with class components: hard-to-reuse logic, bloated components, and confusing classes for beginners.
 
-Antes de los Hooks, si un componente funcional necesitaba estado o efectos secundarios, debías convertirlo a clase. Los Hooks eliminaron esa necesidad y hoy son la forma canónica de escribir React.
+Before Hooks, if a functional component needed state or side effects, you had to convert it to a class. Hooks eliminated that need and are today the canonical way to write React.
 
-React 19 introdujo nuevos Hooks orientados a actions y transitions, consolidando el modelo de datos async en el framework.
+React 19 introduced new Hooks focused on actions and transitions, consolidating the async data model into the framework.
 
-## ¿Para qué sirve?
-Los Hooks permiten encapsular y reutilizar lógica de estado entre componentes sin necesidad de HOCs ni render props. Cada Hook tiene un propósito específico: `useState` para estado local, `useEffect` para sincronizar con sistemas externos, `useContext` para consumir contexto, `useMemo`/`useCallback` para optimizar rendimiento.
+## What is it used for?
+Hooks allow you to encapsulate and reuse stateful logic between components without needing HOCs or render props. Each Hook has a specific purpose: `useState` for local state, `useEffect` for syncing with external systems, `useContext` for consuming context, `useMemo`/`useCallback` for performance optimization.
 
-En el mundo real: un custom Hook `useAuth()` puede encapsular toda la lógica de sesión (token, refresh, logout) y ser reutilizado en cualquier componente que lo necesite.
+In the real world: a custom `useAuth()` Hook can encapsulate all session logic (token, refresh, logout) and be reused in any component that needs it.
 
-## Conceptos clave
+## Key Concepts
 
-**Reglas de los Hooks** — Solo se llaman en el nivel superior de un componente funcional o dentro de otro Hook. Nunca dentro de condicionales, loops o funciones anidadas.
+**Rules of Hooks** — Only called at the top level of a functional component or inside another Hook. Never inside conditionals, loops, or nested functions.
 
-**useState** — Almacena un valor y fuerza un re-render cuando cambia. Retorna el valor actual y un setter. El setter puede recibir el nuevo valor o una función actualizadora `prev => next`.
+**useState** — Stores a value and forces a re-render when it changes. Returns the current value and a setter. The setter can receive the new value or an updater function `prev => next`.
 
-**useEffect** — Ejecuta un efecto después del render. El array de dependencias controla cuándo se re-ejecuta: `[]` solo al montar, `[dep]` cuando cambia `dep`, sin array en cada render. Retorna una función de limpieza opcional.
+**useEffect** — Runs a side effect after render. The dependency array controls when it re-runs: `[]` only on mount, `[dep]` when `dep` changes, no array on every render. Returns an optional cleanup function.
 
-**Custom Hooks** — Funciones que empiezan con `use` y pueden llamar otros Hooks. Son la unidad de reutilización de lógica stateful en React.
+**Custom Hooks** — Functions starting with `use` that can call other Hooks. They are the unit of reusable stateful logic in React.
 
-**useRef** — Mantiene un valor mutable que no dispara re-renders. Usado para referencias al DOM y para valores que persisten entre renders sin causar actualizaciones.
+**useRef** — Holds a mutable value that doesn't trigger re-renders. Used for DOM references and values that persist between renders without causing updates.
 
-## Tabla de todos los Hooks
+## All Hooks Table
 
-| Categoría | Hook | Propósito |
-|-----------|------|-----------|
-| **State** | `useState` | Estado local simple |
-| **State** | `useReducer` | Estado complejo con acciones |
-| **Context** | `useContext` | Consumir un contexto React |
-| **Ref** | `useRef` | Referencia mutable / acceso al DOM |
-| **Ref** | `useImperativeHandle` | Exponer métodos del hijo al padre |
-| **Effect** | `useEffect` | Sincronizar con sistemas externos |
-| **Effect** | `useLayoutEffect` | Efecto síncrono antes de pintar |
-| **Effect** | `useInsertionEffect` | Inyectar estilos (para librerías CSS-in-JS) |
-| **Performance** | `useMemo` | Memoizar valor calculado |
-| **Performance** | `useCallback` | Memoizar referencia de función |
-| **Transition** | `useTransition` | Marcar actualización de estado como no urgente |
-| **Transition** | `useDeferredValue` | Diferir actualización de un valor |
-| **Other** | `useId` | Generar ID único estable (SSR-safe) |
-| **Other** | `useDebugValue` | Etiquetar custom Hooks en DevTools |
-| **Other** | `useSyncExternalStore` | Suscribirse a stores externos |
-| **React 19** | `useActionState` | Estado + acción async (reemplaza useFormState) |
-| **React 19** | `useFormStatus` | Estado del formulario padre (pending, etc.) |
-| **React 19** | `useOptimistic` | Actualización optimista antes de confirmar |
-| **React 19** | `use` | Leer promesas y contextos en render |
+| Category | Hook | Purpose |
+|----------|------|---------|
+| **State** | `useState` | Simple local state |
+| **State** | `useReducer` | Complex state with actions |
+| **Context** | `useContext` | Consume a React context |
+| **Ref** | `useRef` | Mutable reference / DOM access |
+| **Ref** | `useImperativeHandle` | Expose child methods to parent |
+| **Effect** | `useEffect` | Sync with external systems |
+| **Effect** | `useLayoutEffect` | Synchronous effect before paint |
+| **Effect** | `useInsertionEffect` | Inject styles (for CSS-in-JS libraries) |
+| **Performance** | `useMemo` | Memoize a computed value |
+| **Performance** | `useCallback` | Memoize a function reference |
+| **Transition** | `useTransition` | Mark a state update as non-urgent |
+| **Transition** | `useDeferredValue` | Defer updating a value |
+| **Other** | `useId` | Generate a stable unique ID (SSR-safe) |
+| **Other** | `useDebugValue` | Label custom Hooks in DevTools |
+| **Other** | `useSyncExternalStore` | Subscribe to external stores |
+| **React 19** | `useActionState` | State + async action (replaces useFormState) |
+| **React 19** | `useFormStatus` | Parent form state (pending, etc.) |
+| **React 19** | `useOptimistic` | Optimistic update before confirmation |
+| **React 19** | `use` | Read promises and contexts in render |
 
 ## useState vs useReducer
 
-| Criterio | useState | useReducer |
+| Criteria | useState | useReducer |
 |----------|----------|------------|
-| Complejidad del estado | Simple (string, number, boolean) | Objeto con múltiples sub-valores |
-| Lógica de actualización | Directa | Con lógica condicional compleja |
-| Próximos estados | Independientes entre sí | Dependen del estado anterior |
-| Testing | Difícil de testear la lógica | El reducer es una función pura, fácil de testear |
-| Legibilidad | Más simple | Más explícito con acciones nombradas |
+| State complexity | Simple (string, number, boolean) | Object with multiple sub-values |
+| Update logic | Direct | With complex conditional logic |
+| Next states | Independent of each other | Depend on previous state |
+| Testing | Hard to test the logic | Reducer is a pure function, easy to test |
+| Readability | Simpler | More explicit with named actions |
 
-**Regla práctica:** Si te encontrás escribiendo múltiples `setState` relacionados en el mismo evento, considerá `useReducer`.
+**Practical rule:** If you find yourself writing multiple related `setState` calls in the same event, consider `useReducer`.
 
-## ¿Cuándo usarlo?
-- Siempre: los Hooks son la forma estándar de escribir componentes React modernos.
-- Para extraer lógica reutilizable, creá Custom Hooks en lugar de duplicar `useState`/`useEffect`.
-- Cuando necesitás encapsular comportamiento complejo (formularios, fetch, timers, suscripciones).
+## When to use it?
+- Always: Hooks are the standard way to write modern React components.
+- To extract reusable logic, create Custom Hooks instead of duplicating `useState`/`useEffect`.
+- When you need to encapsulate complex behavior (forms, fetch, timers, subscriptions).
 
-## ¿Cuándo NO usarlo?
-- No hay casos donde no usar Hooks en React moderno. Los componentes de clase siguen siendo válidos pero ya no son recomendados.
-- No crees Custom Hooks prematuramente para lógica que solo se usa en un lugar.
+## When NOT to use it?
+- There are no cases where you wouldn't use Hooks in modern React. Class components are still valid but no longer recommended.
+- Don't create Custom Hooks prematurely for logic that's only used in one place.
 
-## ¿Vale la pena aprenderlo?
-Aprender los Hooks es obligatorio para trabajar con React. La curva de aprendizaje de `useState` y `useEffect` es baja; entender las dependencias de `useEffect` y evitar loops infinitos tiene una curva media. Los Hooks de performance (`useMemo`, `useCallback`) se aprenden cuando aparecen problemas reales de rendimiento. La demanda laboral es altísima: cualquier posición de React junior o senior requiere dominarlos.
+## Is it worth learning?
+Learning Hooks is mandatory for working with React. The learning curve for `useState` and `useEffect` is low; understanding `useEffect` dependencies and avoiding infinite loops has a medium curve. Performance Hooks (`useMemo`, `useCallback`) are learned when real performance issues arise. Job market demand is very high: any junior or senior React position requires mastering them.
 
-## Alternativas
+## Alternatives
 
-| Tecnología | Cuándo elegirla |
-|------------|-----------------|
-| Componentes de clase | Proyectos legacy que no migran |
-| Svelte stores | Si cambiás de framework |
-| Vue Composition API | Si usás Vue 3 |
+| Technology | When to choose it |
+|------------|------------------|
+| Class components | Legacy projects that aren't migrating |
+| Svelte stores | If you switch frameworks |
+| Vue Composition API | If you use Vue 3 |
 
-## Qué hace el ejemplo de esta rama
-`src/App.tsx` demuestra los Hooks más importantes en ejemplos interactivos: `useState` con contador, `useEffect` con un timer o fetch, `useRef` con referencia al DOM, `useMemo` y `useCallback` con ejemplos de memoización, y `useReducer` con un estado más complejo. Cada ejemplo está aislado para mostrar el Hook sin distracciones.
+## What does the example in this branch do?
+`src/App.tsx` demonstrates the most important Hooks in interactive examples: `useState` with a counter, `useEffect` with a timer or fetch, `useRef` with a DOM reference, `useMemo` and `useCallback` with memoization examples, and `useReducer` with more complex state. Each example is isolated to show the Hook without distractions.
 
-## Cómo ejecutar
+## How to run
 ```bash
 git checkout feat/hooks
 cd pweb-react-investigation
@@ -91,6 +91,6 @@ npm install
 npm run dev
 ```
 
-## Recursos oficiales
-- [Referencia de Hooks — react.dev](https://react.dev/reference/react/hooks)
-- [Aprende sobre Hooks — react.dev](https://react.dev/learn/state-a-components-memory)
+## Official Resources
+- [Hooks Reference — react.dev](https://react.dev/reference/react/hooks)
+- [Learn about Hooks — react.dev](https://react.dev/learn/state-a-components-memory)
