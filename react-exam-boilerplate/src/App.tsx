@@ -1,121 +1,65 @@
 import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from './assets/vite.svg'
-import heroImg from './assets/hero.png'
-import './App.css'
+
+type Estado = 'idle' | 'exito' | 'error'
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+  const [estado, setEstado] = useState<Estado>('idle')
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault()
+    const emailValido = email.includes('@')
+    const passwordValida = password.length > 5
+    setEstado(emailValido && passwordValida ? 'exito' : 'error')
+  }
 
   return (
-    <>
-      <section id="center">
-        <div className="hero">
-          <img src={heroImg} className="base" width="170" height="179" alt="" />
-          <img src={reactLogo} className="framework" alt="React logo" />
-          <img src={viteLogo} className="vite" alt="Vite logo" />
+    <div style={{ maxWidth: 400, margin: '60px auto', padding: 32, fontFamily: 'sans-serif', border: '1px solid #ddd', borderRadius: 12 }}>
+      <h1 style={{ marginTop: 0, fontSize: 22 }}>Login — Cypress E2E</h1>
+      <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+        <div>
+          <label style={{ display: 'block', marginBottom: 4 }}>Email</label>
+          <input
+            type="email"
+            data-cy="email"
+            value={email}
+            onChange={e => setEmail(e.target.value)}
+            style={{ width: '100%', padding: '8px 12px', border: '1px solid #ddd', borderRadius: 6, boxSizing: 'border-box' }}
+            placeholder="usuario@email.com"
+          />
         </div>
         <div>
-          <h1>Get started</h1>
-          <p>
-            Edit <code>src/App.tsx</code> and save to test <code>HMR</code>
-          </p>
+          <label style={{ display: 'block', marginBottom: 4 }}>Contraseña</label>
+          <input
+            type="password"
+            data-cy="password"
+            value={password}
+            onChange={e => setPassword(e.target.value)}
+            style={{ width: '100%', padding: '8px 12px', border: '1px solid #ddd', borderRadius: 6, boxSizing: 'border-box' }}
+            placeholder="Mínimo 6 caracteres"
+          />
         </div>
         <button
-          type="button"
-          className="counter"
-          onClick={() => setCount((count) => count + 1)}
+          type="submit"
+          data-cy="submit"
+          style={{ padding: '10px 0', background: '#2563eb', color: '#fff', border: 'none', borderRadius: 6, cursor: 'pointer', fontWeight: 600 }}
         >
-          Count is {count}
+          Ingresar
         </button>
-      </section>
+      </form>
 
-      <div className="ticks"></div>
-
-      <section id="next-steps">
-        <div id="docs">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#documentation-icon"></use>
-          </svg>
-          <h2>Documentation</h2>
-          <p>Your questions, answered</p>
-          <ul>
-            <li>
-              <a href="https://vite.dev/" target="_blank">
-                <img className="logo" src={viteLogo} alt="" />
-                Explore Vite
-              </a>
-            </li>
-            <li>
-              <a href="https://react.dev/" target="_blank">
-                <img className="button-icon" src={reactLogo} alt="" />
-                Learn more
-              </a>
-            </li>
-          </ul>
+      {estado === 'exito' && (
+        <div data-cy="mensaje-exito" style={{ marginTop: 16, padding: 12, background: '#dcfce7', color: '#166534', borderRadius: 6 }}>
+          Bienvenido
         </div>
-        <div id="social">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#social-icon"></use>
-          </svg>
-          <h2>Connect with us</h2>
-          <p>Join the Vite community</p>
-          <ul>
-            <li>
-              <a href="https://github.com/vitejs/vite" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#github-icon"></use>
-                </svg>
-                GitHub
-              </a>
-            </li>
-            <li>
-              <a href="https://chat.vite.dev/" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#discord-icon"></use>
-                </svg>
-                Discord
-              </a>
-            </li>
-            <li>
-              <a href="https://x.com/vite_js" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#x-icon"></use>
-                </svg>
-                X.com
-              </a>
-            </li>
-            <li>
-              <a href="https://bsky.app/profile/vite.dev" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#bluesky-icon"></use>
-                </svg>
-                Bluesky
-              </a>
-            </li>
-          </ul>
+      )}
+      {estado === 'error' && (
+        <div data-cy="mensaje-error" style={{ marginTop: 16, padding: 12, background: '#fee2e2', color: '#991b1b', borderRadius: 6 }}>
+          Credenciales inválidas
         </div>
-      </section>
-
-      <div className="ticks"></div>
-      <section id="spacer"></section>
-    </>
+      )}
+    </div>
   )
 }
 
