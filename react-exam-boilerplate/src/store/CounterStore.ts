@@ -28,4 +28,4 @@ class CounterStore {
   }
 }
 
-export const counterStore = new CounterStore()
+export const store = new CounterStore()
