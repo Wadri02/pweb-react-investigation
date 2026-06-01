@@ -1,83 +1,83 @@
 # Tailwind CSS
 
-## ¿Qué es?
-Tailwind CSS es un framework CSS utility-first creado por Adam Wathan y lanzado en 2017. En lugar de proveer componentes prediseñados como Bootstrap, Tailwind provee clases de bajo nivel (utilidades) que aplican una sola propiedad CSS cada una. Construís estilos componiendo estas clases directamente en el HTML/JSX.
+## What is it?
+Tailwind CSS is a utility-first CSS framework created by Adam Wathan and released in 2017. Instead of providing pre-built components like Bootstrap, Tailwind provides low-level classes (utilities) that each apply a single CSS property. You build styles by composing these classes directly in HTML/JSX.
 
-La versión 3 (2021) introdujo el motor JIT (Just-In-Time) que genera solo el CSS que realmente usás, lo que redujo drásticamente el tamaño del bundle de desarrollo y habilitó valores arbitrarios como `w-[37px]`. La versión 4 (2025) eliminó el archivo de configuración por defecto y usa variables CSS nativas.
+Version 3 (2021) introduced the JIT (Just-In-Time) engine that generates only the CSS you actually use, drastically reducing the development bundle size and enabling arbitrary values like `w-[37px]`. Version 4 (2025) removed the default configuration file and uses native CSS custom properties.
 
-El enfoque utility-first resuelve los problemas clásicos de CSS: naming (no hay nombres que inventar), especificidad (todas las utilidades tienen la misma especificidad), y la tendencia del CSS a crecer indefinidamente (el CSS de Tailwind no crece con la app, solo lo que usás se incluye).
+The utility-first approach solves classic CSS problems: naming (no names to invent), specificity (all utilities have the same specificity), and the tendency for CSS to grow indefinitely (Tailwind's CSS doesn't grow with the app — only what you use is included).
 
-## ¿Para qué sirve?
-Estilizar interfaces rápidamente sin escribir CSS personalizado, mantener consistencia visual a través de un sistema de diseño predefinido (escala de espaciado, paleta de colores, tipografía), y co-ubicar estilos con el markup para facilitar el mantenimiento.
+## What is it used for?
+Styling interfaces quickly without writing custom CSS, maintaining visual consistency through a predefined design system (spacing scale, color palette, typography), and co-locating styles with markup to facilitate maintenance.
 
-En el mundo real: equipos que pueden construir UIs completas sin salir del archivo JSX, con consistencia garantizada por el sistema de tokens de Tailwind.
+In the real world: teams that can build complete UIs without leaving the JSX file, with consistency guaranteed by Tailwind's token system.
 
-## Utility-first vs component-based CSS
+## Utility-first vs Component-based CSS
 
-| Aspecto | Utility-first (Tailwind) | Component-based (CSS Modules, Styled) |
-|---------|--------------------------|---------------------------------------|
-| Dónde vive el estilo | En el markup, como clases | En archivos CSS o template literals |
-| Naming | No necesitás inventar nombres | Necesitás nombrar cada clase |
-| Reutilización | Componente React como unidad | Clase CSS como unidad |
-| Aprendizaje inicial | Alta (memorizar clases) | Baja (CSS estándar) |
-| Mantenimiento | Co-ubicado, fácil de ver | Puede dispersarse en archivos |
-| Bundle CSS | Solo lo que usás (JIT) | Todo lo que declarás |
+| Aspect | Utility-first (Tailwind) | Component-based (CSS Modules, Styled) |
+|--------|--------------------------|---------------------------------------|
+| Where styles live | In markup as classes | In CSS files or template literals |
+| Naming | No need to invent names | Must name every class |
+| Reuse | React component as the unit | CSS class as the unit |
+| Initial learning | High (memorize classes) | Low (standard CSS) |
+| Maintenance | Co-located, easy to see | Can spread across files |
+| CSS bundle | Only what you use (JIT) | Everything you declare |
 
-## Breakpoints de Tailwind
+## Tailwind Breakpoints
 
-| Prefijo | Tamaño mínimo | Dispositivo típico |
-|---------|---------------|-------------------|
-| (sin prefijo) | 0px | Mobile (mobile-first) |
-| `sm:` | 640px | Tablet pequeña |
+| Prefix | Min width | Typical device |
+|--------|-----------|---------------|
+| (no prefix) | 0px | Mobile (mobile-first) |
+| `sm:` | 640px | Small tablet |
 | `md:` | 768px | Tablet |
 | `lg:` | 1024px | Desktop |
-| `xl:` | 1280px | Desktop grande |
-| `2xl:` | 1536px | Pantalla muy grande |
+| `xl:` | 1280px | Large desktop |
+| `2xl:` | 1536px | Very large screen |
 
-## Escala de espaciado (spacing scale)
-Tailwind usa una escala donde cada unidad = 4px: `p-1` = 4px, `p-2` = 8px, `p-4` = 16px, `p-8` = 32px, `p-16` = 64px. Se aplica a padding, margin, width, height, gap, etc.
+## Spacing Scale
+Tailwind uses a scale where each unit = 4px: `p-1` = 4px, `p-2` = 8px, `p-4` = 16px, `p-8` = 32px, `p-16` = 64px. Applied to padding, margin, width, height, gap, etc.
 
-## Conceptos clave
+## Key Concepts
 
-**Utility classes** — Clases de un solo propósito: `flex`, `text-center`, `bg-blue-500`, `rounded-lg`, `shadow-md`. Se combinan en el JSX para construir el diseño.
+**Utility classes** — Single-purpose classes: `flex`, `text-center`, `bg-blue-500`, `rounded-lg`, `shadow-md`. Combined in JSX to build the layout.
 
-**Responsive design** — Mobile-first con prefijos de breakpoint: `class="w-full md:w-1/2 lg:w-1/3"` (full en mobile, mitad en tablet, tercio en desktop).
+**Responsive design** — Mobile-first with breakpoint prefixes: `class="w-full md:w-1/2 lg:w-1/3"` (full on mobile, half on tablet, third on desktop).
 
-**Dark mode** — Activado con el prefijo `dark:`: `class="bg-white dark:bg-gray-900"`.
+**Dark mode** — Enabled with the `dark:` prefix: `class="bg-white dark:bg-gray-900"`.
 
-**State variants** — Prefijos para estados: `hover:`, `focus:`, `active:`, `disabled:`, `group-hover:`.
+**State variants** — Prefixes for states: `hover:`, `focus:`, `active:`, `disabled:`, `group-hover:`.
 
-**@apply** — Directiva CSS para extraer utilidades repetidas a una clase personalizada. Útil para componentes muy reutilizados.
+**@apply** — CSS directive to extract repeated utilities into a custom class. Useful for highly reusable components.
 
-## ¿Cuándo usarlo?
-- Proyectos donde querés velocidad de desarrollo sin una librería de componentes.
-- Cuando necesitás diseño personalizado (no el look de Bootstrap o MUI).
-- Equipos que quieren consistencia visual sin un design system propio.
-- Con React + Vite para DX óptima.
+## When to use it?
+- Projects where you want development speed without a component library.
+- When you need custom design (not the Bootstrap or MUI look).
+- Teams that want visual consistency without their own design system.
+- With React + Vite for optimal DX.
 
-## ¿Cuándo NO usarlo?
-- Cuando el equipo prefiere CSS estándar y encuentra ilegibles los classnames largos.
-- Aplicaciones que necesitan un design system corporativo preexistente (usar MUI o Chakra).
-- Si el HTML/JSX se vuelve ilegible por el largo de los classnames (señal de extraer componentes).
+## When NOT to use it?
+- When the team prefers standard CSS and finds long classnames unreadable.
+- Applications that need a pre-existing corporate design system (use MUI or Chakra).
+- If HTML/JSX becomes unreadable due to long classnames (signal to extract components).
 
-## ¿Vale la pena aprenderlo?
-Sí, es una habilidad muy demandada. Tailwind dominó el mercado en 2022-2025 y es el estándar en muchos equipos modernos. La curva de aprendizaje es media: los primeros días memorizando clases son frustrantes, pero después de una semana la productividad supera a CSS manual. Con la extensión de VS Code (Tailwind IntelliSense) el autocompletado hace la experiencia muy fluida.
+## Is it worth learning?
+Yes, it's a highly in-demand skill. Tailwind dominated the market in 2022-2025 and is the standard in many modern teams. The learning curve is medium: the first few days memorizing classes are frustrating, but after a week productivity surpasses manual CSS. With the VS Code extension (Tailwind IntelliSense), autocomplete makes the experience very smooth.
 
-## Alternativas
+## Alternatives
 
-| Tecnología | Cuándo elegirla |
-|------------|-----------------|
-| **Tailwind CSS** (esta) | Diseño personalizado, velocidad, sin componentes prediseñados |
-| **CSS Modules** | CSS estándar, sin dependencias, scoping automático |
-| **Styled Components / Emotion** | CSS-in-JS, estilos dinámicos con props, theming |
-| **Chakra UI** | Componentes accesibles + sistema de diseño integrado |
-| **Material UI (MUI)** | Design system Material completo, muchos componentes |
-| **shadcn/ui** | Componentes Radix + Tailwind, copiados al proyecto |
+| Technology | When to choose it |
+|------------|------------------|
+| **Tailwind CSS** (this) | Custom design, speed, no pre-built components |
+| **CSS Modules** | Standard CSS, no dependencies, automatic scoping |
+| **Styled Components / Emotion** | CSS-in-JS, dynamic styles with props, theming |
+| **Chakra UI** | Accessible components + integrated design system |
+| **Material UI (MUI)** | Complete Material design system, many components |
+| **shadcn/ui** | Radix + Tailwind components, copied into the project |
 
-## Qué hace el ejemplo de esta rama
-`src/App.tsx` construye una interfaz usando solo clases de Tailwind: layout con flexbox/grid, tipografía, colores, espaciado, y responsive design. Demuestra cómo se componen las utilidades para construir componentes sin escribir una línea de CSS personalizado.
+## What does the example in this branch do?
+`src/App.tsx` builds an interface using only Tailwind classes: layout with flexbox/grid, typography, colors, spacing, and responsive design. It demonstrates how utilities are composed to build components without writing a single line of custom CSS.
 
-## Cómo ejecutar
+## How to run
 ```bash
 git checkout feat/tailwind
 cd pweb-react-investigation
@@ -85,7 +85,7 @@ npm install
 npm run dev
 ```
 
-## Recursos oficiales
-- [Tailwind CSS — documentación oficial](https://tailwindcss.com/docs)
-- [Tailwind UI (componentes de pago)](https://tailwindui.com/)
-- [Tailwind IntelliSense para VS Code](https://marketplace.visualstudio.com/items?itemName=bradlc.vscode-tailwindcss)
+## Official Resources
+- [Tailwind CSS — official documentation](https://tailwindcss.com/docs)
+- [Tailwind UI (paid components)](https://tailwindui.com/)
+- [Tailwind IntelliSense for VS Code](https://marketplace.visualstudio.com/items?itemName=bradlc.vscode-tailwindcss)
