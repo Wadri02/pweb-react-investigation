@@ -128,8 +128,11 @@ pweb-react-investigation/          ← git repository root
 
 ## Authors
 
-**Nayeli Guayas** 
-**Washington Lumbi** 
-**Luis Paspuezan** 
+| Name | Role |
+|------|------|
+| **Nayeli Guayas** | Systems Engineering Student — UCE |
+| **Washington Lumbi** | Systems Engineering Student — UCE |
+| **Luis Paspuezan** | Systems Engineering Student — UCE |
 
+> Web Programming course — Universidad Central del Ecuador (UCE)
 
