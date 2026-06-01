@@ -1,93 +1,93 @@
 # Cypress
 
-## ¿Qué es?
-Cypress es una herramienta de testing end-to-end (E2E) para aplicaciones web, creada por Brian Mann y lanzada en 2017. A diferencia de herramientas anteriores como Selenium, Cypress corre directamente dentro del browser, lo que le permite tener acceso completo al DOM, al network, al storage y a los eventos del browser de forma nativa.
+## What is it?
+Cypress is an end-to-end (E2E) testing tool for web applications, created by Brian Mann and released in 2017. Unlike previous tools like Selenium, Cypress runs directly inside the browser, giving it native access to the DOM, network, storage, and browser events.
 
-Su arquitectura permite videos automáticos de los tests, screenshots en fallos, time-travel debugging (ver el estado del DOM en cada step del test), y una interfaz visual que muestra qué hace el test en tiempo real.
+Its architecture enables automatic test videos, screenshots on failures, time-travel debugging (viewing the DOM state at each test step), and a visual interface that shows what the test is doing in real time.
 
-Cypress también ofrece Component Testing para testear componentes React aislados con un browser real, pero su uso principal es E2E: simular un usuario real navegando por la app completa.
+Cypress also offers Component Testing for testing isolated React components with a real browser, but its primary use is E2E: simulating a real user navigating the complete app.
 
-## ¿Para qué sirve?
-Testear flujos completos del usuario tal como ocurren en el browser: abrir la app, navegar, hacer click, llenar formularios, verificar que el contenido cambia. Detecta bugs que los tests unitarios y de integración no pueden: problemas de layout, errores de red, comportamiento del browser.
+## What is it used for?
+Testing complete user flows as they happen in the browser: opening the app, navigating, clicking, filling forms, verifying that content changes. Catches bugs that unit and integration tests can't: layout issues, network errors, browser-specific behavior.
 
-En el mundo real: testear que un usuario puede registrarse, iniciar sesión, agregar un producto al carrito, ir al checkout, completar el pago y ver la confirmación — todo en el browser real.
+In the real world: testing that a user can register, log in, add a product to the cart, go to checkout, complete payment, and see the confirmation — all in the real browser.
 
-## Diferencia entre tipos de tests
+## Difference between test types
 
-| Tipo | Nivel | Velocidad | Confianza | Herramienta |
-|------|-------|-----------|-----------|-------------|
-| **Unit test** | Función/módulo aislado | ⚡⚡⚡ Muy rápido | Media | Jest/Vitest |
-| **Integration test** | Varios módulos juntos | ⚡⚡ Rápido | Alta | RTL + Vitest |
-| **E2E test** | App completa en browser | ⚡ Lento | Muy alta | Cypress/Playwright |
+| Type | Level | Speed | Confidence | Tool |
+|------|-------|-------|------------|------|
+| **Unit test** | Isolated function/module | ⚡⚡⚡ Very fast | Medium | Jest/Vitest |
+| **Integration test** | Multiple modules together | ⚡⚡ Fast | High | RTL + Vitest |
+| **E2E test** | Complete app in browser | ⚡ Slow | Very high | Cypress/Playwright |
 
-La pirámide de tests recomienda muchos unit tests, algunos integration tests, y pocos E2E tests bien elegidos.
+The test pyramid recommends many unit tests, some integration tests, and few well-chosen E2E tests.
 
-## Por qué usar data-cy para selectores
+## Why use data-cy for selectors
 
 ```tsx
-// ❌ Frágil: se rompe si cambias el CSS o el texto
-cy.get('.btn-primary')               // Depende de la clase CSS
-cy.contains('Agregar al carrito')   // Depende del texto (cambia con i18n)
+// ❌ Fragile: breaks if you change CSS or text
+cy.get('.btn-primary')               // Depends on CSS class
+cy.contains('Add to Cart')          // Depends on text (changes with i18n)
 
-// ✅ Robusto: el atributo existe solo para tests
-cy.get('[data-cy="add-to-cart-btn"]')  // No cambia con refactors de UI
+// ✅ Robust: attribute exists only for tests
+cy.get('[data-cy="add-to-cart-btn"]')  // Doesn't change with UI refactors
 ```
 
-`data-cy` (o `data-testid`) es un atributo HTML sin significado para el browser ni para CSS. Comunica a los devs que ese elemento es usado en tests y no debe eliminarse sin actualizar los tests.
+`data-cy` (or `data-testid`) is an HTML attribute with no meaning to the browser or CSS. It communicates to devs that the element is used in tests and shouldn't be removed without updating the tests.
 
-## Conceptos clave
+## Key Concepts
 
-**cy.visit** — Navega a una URL. El punto de entrada de la mayoría de tests: `cy.visit('/')`.
+**cy.visit** — Navigates to a URL. The entry point for most tests: `cy.visit('/')`.
 
-**cy.get** — Selecciona elementos del DOM. Acepta cualquier selector CSS o `[data-cy="nombre"]`.
+**cy.get** — Selects DOM elements. Accepts any CSS selector or `[data-cy="name"]`.
 
-**cy.contains** — Busca un elemento que contenga el texto dado. Útil para verificar contenido visible.
+**cy.contains** — Finds an element containing the given text. Useful for verifying visible content.
 
-**.should()** — Assertion encadenada. Cypress reintenta automáticamente hasta que pase o haga timeout: `cy.get('[data-cy="title"]').should('have.text', 'Bienvenido')`.
+**.should()** — Chained assertion. Cypress automatically retries until it passes or times out: `cy.get('[data-cy="title"]').should('have.text', 'Welcome')`.
 
-**.type()** — Simula escritura en un input: `cy.get('input[name="email"]').type('user@test.com')`.
+**.type()** — Simulates typing in an input: `cy.get('input[name="email"]').type('user@test.com')`.
 
-**.click()** — Simula un click: `cy.get('[data-cy="submit"]').click()`.
+**.click()** — Simulates a click: `cy.get('[data-cy="submit"]').click()`.
 
-**intercept** — Intercepta requests de red para mockear respuestas: `cy.intercept('GET', '/api/users', { fixture: 'users.json' })`.
+**intercept** — Intercepts network requests to mock responses: `cy.intercept('GET', '/api/users', { fixture: 'users.json' })`.
 
-## ¿Cuándo usarlo?
-- Flujos críticos que deben funcionar siempre: login, registro, checkout, envío de formularios.
-- Cuando querés confianza de que la app funciona en el browser real, no solo en jsdom.
-- Regresión en features importantes antes de deployar.
+## When to use it?
+- Critical flows that must always work: login, registration, checkout, form submissions.
+- When you want confidence that the app works in the real browser, not just in jsdom.
+- Regression testing on important features before deploying.
 
-## ¿Cuándo NO usarlo?
-- Para testear lógica de funciones: demasiado lento, usá Jest/Vitest.
-- Para cubrir todos los edge cases de un componente: demasiado costoso, usá RTL.
-- No reemplaces tests unitarios con E2E: los E2E son para los happy paths y flujos críticos.
+## When NOT to use it?
+- For testing function logic: too slow, use Jest/Vitest.
+- For covering all edge cases of a component: too costly, use RTL.
+- Don't replace unit tests with E2E: E2E tests are for happy paths and critical flows.
 
-## ¿Vale la pena aprenderlo?
-Sí, Cypress es el estándar de E2E más popular y su DX es excelente. La curva de aprendizaje de los comandos básicos es baja; `intercept` para mockear APIs y el manejo de timing asincrónico tiene curva media. Altamente valorado en equipos con prácticas de QA maduras.
+## Is it worth learning?
+Yes, Cypress is the most popular E2E standard and its DX is excellent. The learning curve for basic commands is low; `intercept` for mocking APIs and handling async timing has a medium curve. Highly valued in teams with mature QA practices.
 
-## Alternativas
+## Alternatives
 
-| Tecnología | Cuándo elegirla |
-|------------|-----------------|
-| **Cypress** (esta) | DX excelente, debugging visual, muy popular |
-| **Playwright** | Multi-browser (Cypress era solo Chromium-first), más rápido en CI, Microsoft |
-| **Selenium** | Proyectos legacy, soporte multi-browser legacy |
-| **Puppeteer** | Control de bajo nivel sobre Chrome, no es un framework de testing |
+| Technology | When to choose it |
+|------------|------------------|
+| **Cypress** (this) | Excellent DX, visual debugging, very popular |
+| **Playwright** | Multi-browser (Cypress was Chromium-first), faster in CI, Microsoft |
+| **Selenium** | Legacy projects, legacy multi-browser support |
+| **Puppeteer** | Low-level Chrome control, not a testing framework |
 
-## Qué hace el ejemplo de esta rama
-Los archivos de test en `cypress/e2e/` demuestran `cy.visit`, `cy.get` con selectores `data-cy`, `.type()`, `.click()`, `.should()` para assertions, y el flujo completo de al menos una feature de la app. El código en `src/App.tsx` incluye atributos `data-cy` en los elementos que los tests usan.
+## What does the example in this branch do?
+The test files in `cypress/e2e/` demonstrate `cy.visit`, `cy.get` with `data-cy` selectors, `.type()`, `.click()`, `.should()` for assertions, and the complete flow of at least one app feature. The code in `src/App.tsx` includes `data-cy` attributes on the elements used by the tests.
 
-## Cómo ejecutar
+## How to run
 ```bash
 git checkout feat/cypress
 cd pweb-react-investigation
 npm install
-npm run dev          # En una terminal (Cypress necesita la app corriendo)
-npx cypress open     # En otra terminal (abre la interfaz visual)
-# o para headless:
+npm run dev          # In one terminal (Cypress needs the app running)
+npx cypress open     # In another terminal (opens the visual interface)
+# or headless:
 npx cypress run
 ```
 
-## Recursos oficiales
-- [Cypress — documentación oficial](https://docs.cypress.io/)
-- [Best practices de Cypress](https://docs.cypress.io/guides/references/best-practices)
-- [Playwright (alternativa)](https://playwright.dev/)
+## Official Resources
+- [Cypress — official documentation](https://docs.cypress.io/)
+- [Cypress best practices](https://docs.cypress.io/guides/references/best-practices)
+- [Playwright (alternative)](https://playwright.dev/)
