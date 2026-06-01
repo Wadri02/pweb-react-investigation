@@ -1,72 +1,72 @@
 # React Hook Form
 
-## ¿Qué es?
-React Hook Form (RHF) es una librería para manejar formularios en React, creada por Beier (Bill) Luo y lanzada en 2019. Su diseño central es el uso de inputs no controlados (uncontrolled inputs): en lugar de manejar cada campo con `useState` y `onChange`, RHF registra los inputs directamente con el DOM usando `ref`, y solo lee sus valores cuando el formulario se envía o cuando se solicita explícitamente.
+## What is it?
+React Hook Form (RHF) is a library for handling forms in React, created by Beier (Bill) Luo and released in 2019. Its core design is the use of uncontrolled inputs: instead of managing each field with `useState` and `onChange`, RHF registers inputs directly with the DOM using `ref`, and only reads their values when the form is submitted or when explicitly requested.
 
-Esto tiene una consecuencia enorme: los re-renders son mínimos. En un formulario de 20 campos con Formik o con `useState`, cada pulsación de tecla dispara un re-render de todo el formulario. Con RHF, escribir en un campo no re-renderiza nada, a menos que uses `watch`.
+This has an enormous consequence: re-renders are minimal. In a 20-field form with Formik or `useState`, every keystroke triggers a re-render of the entire form. With RHF, typing in a field re-renders nothing, unless you use `watch`.
 
-Con ~9kb gzip, RHF es significativamente más liviana que Formik. La versión 7 (2021) requiere React 16.8+ y aprovecha completamente el modelo de Hooks.
+At ~9kb gzip, RHF is significantly lighter than Formik. Version 7 (2021) requires React 16.8+ and fully leverages the Hooks model.
 
-## ¿Para qué sirve?
-Manejar el estado, validación y envío de formularios con mínimo boilerplate y máxima performance. Ideal para formularios complejos con muchos campos, validaciones condicionales, o donde el rendimiento importa.
+## What is it used for?
+Managing form state, validation, and submission with minimal boilerplate and maximum performance. Ideal for complex forms with many fields, conditional validations, or where performance matters.
 
-En el mundo real: un formulario de checkout con 15 campos, validaciones complejas y un botón de envío que debe estar habilitado solo cuando todo es válido.
+In the real world: a checkout form with 15 fields, complex validations, and a submit button that should only be enabled when everything is valid.
 
-## Por qué minimiza re-renders (uncontrolled inputs)
+## Why it minimizes re-renders (uncontrolled inputs)
 
 ```tsx
-// ❌ Controlado: re-render en CADA tecla
+// ❌ Controlled: re-render on EVERY keystroke
 const [name, setName] = useState('')
 <input value={name} onChange={e => setName(e.target.value)} />
 
-// ✅ RHF: sin re-render al escribir
+// ✅ RHF: no re-render while typing
 const { register } = useForm()
-<input {...register('name')} /> // El DOM maneja el valor, RHF lo lee con ref
+<input {...register('name')} /> // DOM manages the value, RHF reads it via ref
 ```
 
-## Conceptos clave
+## Key Concepts
 
-**useForm** — Hook principal. Retorna `register`, `handleSubmit`, `watch`, `setValue`, `getValues`, `formState`, `reset` y más. Acepta `defaultValues` y `resolver` para validación.
+**useForm** — Main Hook. Returns `register`, `handleSubmit`, `watch`, `setValue`, `getValues`, `formState`, `reset`, and more. Accepts `defaultValues` and `resolver` for validation.
 
-**register** — Conecta un input a RHF. Retorna `ref`, `name`, `onChange`, `onBlur`. Se usa como `{...register('fieldName', { required: true, minLength: 3 })}`.
+**register** — Connects an input to RHF. Returns `ref`, `name`, `onChange`, `onBlur`. Used as `{...register('fieldName', { required: true, minLength: 3 })}`.
 
-**handleSubmit** — Wrapper del submit que valida antes de llamar al handler. Solo llama al callback si todos los campos son válidos.
+**handleSubmit** — Submit wrapper that validates before calling the handler. Only calls the callback if all fields are valid.
 
-**watch** — Observa el valor de uno o más campos y re-renderiza cuando cambian. Úsalo solo cuando necesitás reactividad en el UI (mostrar/ocultar campos condicionalmente).
+**watch** — Observes the value of one or more fields and re-renders when they change. Use it only when you need reactivity in the UI (conditionally showing/hiding fields).
 
-**setValue / getValues** — Modificar y leer valores programáticamente sin re-render (getValues) o con re-render controlado (setValue con `shouldDirty`).
+**setValue / getValues** — Modify and read values programmatically without re-render (getValues) or with controlled re-render (setValue with `shouldDirty`).
 
-**formState** — Objeto con `errors`, `isSubmitting`, `isDirty`, `isValid`, `dirtyFields`, `touchedFields`.
+**formState** — Object with `errors`, `isSubmitting`, `isDirty`, `isValid`, `dirtyFields`, `touchedFields`.
 
-## ¿Cuándo usarlo?
-- Formularios de cualquier complejidad en React.
-- Cuando el rendimiento del formulario importa (muchos campos, mobile con CPU limitado).
-- En combinación con Zod para validación con TypeScript (ver rama `feat/rhf-zod`).
-- Cuando querés la mejor DX para formularios en React moderno.
+## When to use it?
+- Forms of any complexity in React.
+- When form performance matters (many fields, mobile with limited CPU).
+- Combined with Zod for validation with TypeScript (see branch `feat/rhf-zod`).
+- When you want the best DX for forms in modern React.
 
-## ¿Cuándo NO usarlo?
-- Formularios de 1-2 campos simples donde `useState` es suficiente.
-- Si el equipo ya está estandarizado en Formik y el rendimiento no es un problema.
+## When NOT to use it?
+- Simple 1-2 field forms where `useState` is enough.
+- If the team is already standardized on Formik and performance isn't a problem.
 
-## ¿Vale la pena aprenderlo?
-Absolutamente. RHF es el estándar actual para formularios en React. La curva de aprendizaje es baja para lo básico y media para validación condicional, arrays de campos (`useFieldArray`) y patterns avanzados. La combinación RHF + Zod es hoy la recomendación de la comunidad para formularios con TypeScript. Altamente demandado en el mercado laboral.
+## Is it worth learning?
+Absolutely. RHF is the current standard for forms in React. The learning curve is low for the basics and medium for conditional validation, field arrays (`useFieldArray`), and advanced patterns. The RHF + Zod combination is today the community recommendation for forms with TypeScript. Highly demanded in the job market.
 
-## Alternativas
+## Alternatives
 
-| Tecnología | Cuándo elegirla |
-|------------|-----------------|
-| **React Hook Form** (esta) | Rendimiento, TypeScript, estándar moderno |
-| **Formik** | Equipo que lo conoce, más intuitivo para principiantes, más verbose |
-| **useState manual** | 1-2 campos simples, sin validación compleja |
-| **TanStack Form** | Alpha/beta, del mismo equipo que TanStack Query, type-safe |
+| Technology | When to choose it |
+|------------|------------------|
+| **React Hook Form** (this) | Performance, TypeScript, modern standard |
+| **Formik** | Team already knows it, more intuitive for beginners, more verbose |
+| **Manual useState** | 1-2 simple fields, no complex validation |
+| **TanStack Form** | Alpha/beta, same team as TanStack Query, type-safe |
 
-## ¿RHF o Formik?
-React Hook Form tiene mejor rendimiento por el modelo de uncontrolled inputs. Formik es más intuitivo para desarrolladores que vienen de Angular o que prefieren el modelo controlado (valores en el estado de React). Para proyectos nuevos, RHF es la recomendación por rendimiento, menor bundle y mejor integración con TypeScript. Formik sigue siendo válido si el equipo lo conoce bien.
+## React Hook Form or Formik?
+React Hook Form has better performance due to uncontrolled inputs (no re-renders per keystroke). Formik is more intuitive for developers coming from Angular or who prefer the controlled model (values in React state). For new projects, RHF is the recommendation for performance, smaller bundle, and better TypeScript integration. Formik is still valid if the team knows it well.
 
-## Qué hace el ejemplo de esta rama
-`src/App.tsx` implementa un formulario con `useForm`, varios campos registrados con `register`, validación nativa (required, minLength, pattern), manejo de errores con `formState.errors`, y submit con `handleSubmit`. Puede incluir `watch` para mostrar el valor en tiempo real.
+## What does the example in this branch do?
+`src/App.tsx` implements a form with `useForm`, several fields registered with `register`, native validation (required, minLength, pattern), error handling with `formState.errors`, and submit with `handleSubmit`. May include `watch` to display the value in real time.
 
-## Cómo ejecutar
+## How to run
 ```bash
 git checkout feat/rhf
 cd pweb-react-investigation
@@ -74,6 +74,6 @@ npm install
 npm run dev
 ```
 
-## Recursos oficiales
-- [React Hook Form — documentación oficial](https://react-hook-form.com/)
+## Official Resources
+- [React Hook Form — official documentation](https://react-hook-form.com/)
 - [API reference](https://react-hook-form.com/docs)
