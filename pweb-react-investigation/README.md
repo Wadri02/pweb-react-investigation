@@ -1,66 +1,66 @@
 # Zustand
 
-## ¿Qué es?
-Zustand es una librería minimalista de gestión de estado para React, creada por Daishi Kato y el equipo de Poimandres (los mismos que Jotai y Valtio). El nombre significa "estado" en alemán. Fue publicada en 2019 como respuesta a la complejidad de Redux y las limitaciones de Context API para estado frecuentemente actualizado.
+## What is it?
+Zustand is a minimalist state management library for React, created by Daishi Kato and the Poimandres team (the same authors behind Jotai and Valtio). The name means "state" in German. It was published in 2019 as a response to Redux's complexity and Context API's limitations for frequently updated state.
 
-La filosofía de Zustand es "bear necessities" (lo mínimo necesario): una API pequeña, sin boilerplate, sin providers obligatorios, y con actualizaciones selectivas para evitar re-renders innecesarios. Su tamaño minificado y comprimido es de aproximadamente 1kb.
+Zustand's philosophy is "bear necessities": a small API, no boilerplate, no mandatory providers, and selective updates to avoid unnecessary re-renders. Its minified and compressed size is approximately 1kb.
 
-Internamente, Zustand usa `useSyncExternalStore` de React para suscribirse a los cambios del store, lo que garantiza compatibilidad con el modo concurrente de React 18+.
+Internally, Zustand uses React's `useSyncExternalStore` to subscribe to store changes, which guarantees compatibility with React 18+'s concurrent mode.
 
-## ¿Para qué sirve?
-Gestionar estado global compartido entre componentes que no tienen una relación padre-hijo directa, con mejor rendimiento que Context API para datos que cambian frecuentemente.
+## What is it used for?
+Managing shared global state between components that don't have a direct parent-child relationship, with better performance than Context API for frequently changing data.
 
-En el mundo real: un carrito de compras con productos, cantidad y total que múltiples componentes (header, sidebar, modal) necesitan leer y modificar. Con Zustand, cada componente se suscribe solo a la parte del estado que usa.
+In the real world: a shopping cart with products, quantity, and total that multiple components (header, sidebar, modal) need to read and modify. With Zustand, each component subscribes only to the part of the state it uses.
 
-## Conceptos clave
+## Key Concepts
 
-**create** — Función principal. Recibe un callback que retorna el estado inicial y las acciones. Retorna un Hook personalizado.
+**create** — The main function. Takes a callback that returns the initial state and actions. Returns a custom Hook.
 
-**Selector** — Función pasada al Hook del store que elige qué parte del estado usar. El componente solo re-renderiza cuando esa parte cambia: `const count = useStore(s => s.count)`.
+**Selector** — Function passed to the store Hook that picks which part of the state to use. The component only re-renders when that part changes: `const count = useStore(s => s.count)`.
 
-**set** — Función inyectada en el store para actualizar estado. Hace un merge shallow automático, no necesitás spread el estado anterior.
+**set** — Function injected into the store to update state. Performs an automatic shallow merge, no need to spread previous state.
 
-**get** — Función inyectada para leer el estado actual dentro de acciones. Útil para lógica que depende del estado previo.
+**get** — Function injected to read the current state inside actions. Useful for logic that depends on previous state.
 
-**Middleware** — Zustand tiene middleware oficial para persistencia (`persist`), integración con DevTools (`devtools`), e Immer para mutaciones inmutables (`immer`).
+**Middleware** — Zustand has official middleware for persistence (`persist`), DevTools integration (`devtools`), and Immer for immutable mutations (`immer`).
 
-## ¿Cuándo usarlo?
-- Estado global que cambia frecuentemente (UI interactiva, filtros, carrito).
-- Múltiples componentes desconectados que comparten datos.
-- Cuando Context API genera re-renders excesivos.
-- Como reemplazo de Redux en proyectos que no necesitan toda su infraestructura.
+## When to use it?
+- Global state that changes frequently (interactive UI, filters, cart).
+- Multiple disconnected components sharing data.
+- When Context API generates excessive re-renders.
+- As a Redux replacement in projects that don't need its full infrastructure.
 
-## ¿Cuándo NO usarlo?
-- Estado local de un componente: usá `useState`.
-- Datos del servidor (fetching, caché): usá TanStack Query.
-- Proyectos muy simples donde Context API alcanza.
-- Si el equipo ya está estandarizado en Redux con casos de uso complejos de middleware.
+## When NOT to use it?
+- Local component state: use `useState`.
+- Server data (fetching, caching): use TanStack Query.
+- Very simple projects where Context API is enough.
+- If the team is already standardized on Redux with complex middleware use cases.
 
-## ¿Vale la pena aprenderlo?
-Absolutamente. Zustand es hoy la librería de estado más popular en el ecosistema React moderno, superando a Redux en nuevos proyectos según las encuestas de la comunidad. La curva de aprendizaje es muy baja: podés tener un store funcional en 10 líneas. La demanda laboral es alta y creciente.
+## Is it worth learning?
+Absolutely. Zustand is today the most popular state library in the modern React ecosystem, surpassing Redux in new projects according to community surveys. The learning curve is very low: you can have a working store in 10 lines. Job market demand is high and growing.
 
-## Alternativas
+## Alternatives
 
-| Tecnología | Cuándo elegirla |
-|------------|-----------------|
-| **Zustand** (esta) | API simple, rendimiento, proyectos modernos, equipo pequeño/mediano |
-| **Context API** | Sin dependencias, datos estáticos, proyecto muy simple |
-| **MobX** | Preferís estado reactivo/observable, vínculo directo con OOP |
-| **Redux Toolkit** | Apps enterprise, equipo grande, middlewares complejos, DevTools |
-| **Jotai** | Estado atómico fino, sin store centralizado |
+| Technology | When to choose it |
+|------------|------------------|
+| **Zustand** (this) | Simple API, performance, modern projects, small/medium team |
+| **Context API** | No dependencies, static data, very simple project |
+| **MobX** | Prefer reactive/observable state, natural fit for OOP |
+| **Redux Toolkit** | Enterprise apps, large team, complex middlewares, DevTools |
+| **Jotai** | Fine-grained atomic state, no centralized store |
 
-## ¿Zustand, MobX o useContext?
+## Zustand, MobX, or useContext?
 
-**Zustand vs Context API:** Zustand gana en rendimiento (selectores evitan re-renders), ergonomía (no necesita Provider), y escalabilidad. Context API gana en cero dependencias.
+**Zustand vs Context API:** Zustand wins on performance (selectors avoid re-renders), ergonomics (no Provider needed), and scalability. Context API wins on zero dependencies.
 
-**Zustand vs MobX:** Zustand es funcional y explícito: sabés exactamente cuándo cambia el estado. MobX es reactivo y mágico: las mutaciones se rastrean automáticamente. Zustand es más predecible y más fácil de debuggear; MobX tiene menos boilerplate para estados muy complejos con relaciones entre datos.
+**Zustand vs MobX:** Zustand is functional and explicit — you know exactly when state changes. MobX is reactive and magical — mutations are tracked automatically. Zustand is more predictable and easier to debug; MobX has less boilerplate for very complex states with relationships between data.
 
-**Recomendación:** Para proyectos nuevos, Zustand es la elección predeterminada. MobX solo si el equipo tiene experiencia previa o si el dominio encaja naturalmente con el modelo reactivo (ej: apps de simulación, spreadsheets).
+**Recommendation:** For new projects, Zustand is the default choice. MobX only if the team has prior experience or if the domain naturally fits the reactive model (e.g., simulation apps, spreadsheets).
 
-## Qué hace el ejemplo de esta rama
-`src/App.tsx` define un store con Zustand que contiene estado y acciones (por ejemplo, un contador con incrementar/decrementar/resetear, o un carrito básico). Muestra cómo múltiples componentes consumen el mismo store con selectores independientes y cómo las acciones modifican el estado global.
+## What does the example in this branch do?
+`src/App.tsx` defines a Zustand store with state and actions (for example, a counter with increment/decrement/reset, or a basic cart). It shows how multiple components consume the same store with independent selectors and how actions modify the global state.
 
-## Cómo ejecutar
+## How to run
 ```bash
 git checkout feat/zustand
 cd pweb-react-investigation
@@ -68,6 +68,6 @@ npm install
 npm run dev
 ```
 
-## Recursos oficiales
+## Official Resources
 - [Zustand GitHub](https://github.com/pmndrs/zustand)
-- [Documentación oficial](https://zustand.docs.pmnd.rs/)
+- [Official Documentation](https://zustand.docs.pmnd.rs/)
